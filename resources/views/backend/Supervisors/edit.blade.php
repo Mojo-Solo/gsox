@@ -1,0 +1,94 @@
+@extends('backend.layouts.app')
+@section('title', __('labels.backend.Supervisors.title').' | '.app_name())
+
+@section('content')
+    {{ html()->modelForm($Supervisor, 'PATCH', route('admin.Supervisors.update', $Supervisor->id))->class('form-horizontal')->acceptsFiles()->open() }}
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="page-title d-inline">@lang('labels.backend.Supervisors.edit')</h3>
+            <div class="float-right">
+                <a href="{{ route('admin.Supervisors.index') }}"
+                   class="btn btn-success">@lang('labels.backend.Supervisors.view')</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group row">
+                        {{ html()->label(__('labels.backend.Supervisors.fields.first_name'))->class('col-md-2 form-control-label')->for('first_name') }}
+
+                        <div class="col-md-10">
+                            {{ html()->text('first_name')
+                                ->class('form-control')
+                                ->placeholder(__('labels.backend.Supervisors.fields.first_name'))
+                                ->attribute('maxlength', 191)
+                                ->required()
+                                ->autofocus() }}
+                        </div><!--col-->
+                    </div><!--form-group-->
+
+                    <div class="form-group row">
+                        {{ html()->label(__('labels.backend.Supervisors.fields.last_name'))->class('col-md-2 form-control-label')->for('last_name') }}
+
+                        <div class="col-md-10">
+                            {{ html()->text('last_name')
+                                ->class('form-control')
+                                ->placeholder(__('labels.backend.Supervisors.fields.last_name'))
+                                ->attribute('maxlength', 191)
+                                ->required() }}
+                        </div><!--col-->
+                    </div><!--form-group-->
+
+                    <div class="form-group row">
+                        {{ html()->label(__('labels.backend.Supervisors.fields.email'))->class('col-md-2 form-control-label')->for('email') }}
+
+                        <div class="col-md-10">
+                            {{ html()->email('email')
+                                ->class('form-control')
+                                ->placeholder(__('labels.backend.Supervisors.fields.email'))
+                                ->attributes(['maxlength'=> 191,'readonly'=>true])
+                                ->required() }}
+                        </div><!--col-->
+                    </div><!--form-group-->
+
+                    <div class="form-group row">
+                        {{ html()->label(__('labels.backend.Supervisors.fields.password'))->class('col-md-2 form-control-label')->for('password') }}
+
+                        <div class="col-md-10">
+                            {{ html()->password('password')
+                                ->class('form-control')
+                                ->value('')
+                                ->placeholder(__('labels.backend.Supervisors.fields.password'))
+}}
+                        </div><!--col-->
+                    </div><!--form-group-->
+
+                    <div class="form-group row">
+                        {{ html()->label(__('labels.backend.Supervisors.fields.image'))->class('col-md-2 form-control-label')->for('image') }}
+
+                        <div class="col-md-10">
+                            {!! Form::file('image', ['class' => 'form-control d-inline-block', 'placeholder' => '']) !!}
+                        </div><!--col-->
+                    </div>
+
+                    <div class="form-group row">
+                        {{ html()->label(__('labels.backend.courses.select_Client'))->class('col-md-2 form-control-label')->for('client_id') }}
+                        <div class="col-md-10">
+                            {{ Form::select('client_id', $clients, $Supervisor->client_id,['class'=>'select2 form-control','required','id' => 'client_id']) }}
+                        </div><!--col-->
+                    </div>
+
+                    <div class="form-group row justify-content-center">
+                        <div class="col-4">
+                            {{ form_cancel(route('admin.Supervisors.index'), __('buttons.general.cancel')) }}
+                            {{ form_submit(__('buttons.general.crud.update')) }}
+                        </div>
+                    </div><!--col-->
+                </div>
+            </div>
+        </div>
+
+    </div>
+    {{ html()->closeModelForm() }}
+@endsection
