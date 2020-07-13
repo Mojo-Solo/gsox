@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use App\Models\CourseTimeline;
+use Carbon\Carbon;
 class ReportController extends Controller
 {
     public function getSalesReport()
@@ -174,7 +175,7 @@ class ReportController extends Controller
                     ->join('course_student', 'course_student.user_id', '=', 'users.id')
                     ->join('courses', 'course_student.course_id', '=', 'courses.id')
                     ->join('orders', 'orders.user_id', '=', 'users.id')
-                    ->join('course_user', 'course_user.course_id', '=', 'courses.id')
+                    // ->join('course_user', 'course_user.course_id', '=', 'courses.id')
                     ->join('vendors', 'vendors.id', '=', 'users.vendor_id')
                     ->where('courses.published', '=', 1)
                     ->whereIn('course_user.user_id',$user_ids)
@@ -185,7 +186,7 @@ class ReportController extends Controller
                     ->join('course_student', 'course_student.user_id', '=', 'users.id')
                     ->join('courses', 'course_student.course_id', '=', 'courses.id')
                     ->join('orders', 'orders.user_id', '=', 'users.id')
-                    ->join('course_user', 'course_user.course_id', '=', 'courses.id')
+                    // ->join('course_user', 'course_user.course_id', '=', 'courses.id')
                     ->join('vendors', 'vendors.id', '=', 'users.vendor_id')
                     ->where('courses.published', '=', 1)
                     ->where('courses.client_id',auth()->user()->client_id)
@@ -196,13 +197,12 @@ class ReportController extends Controller
                     ->join('course_student', 'course_student.user_id', '=', 'users.id')
                     ->join('courses', 'course_student.course_id', '=', 'courses.id')
                     ->join('orders', 'orders.user_id', '=', 'users.id')
-                    ->join('course_user', 'course_user.course_id', '=', 'courses.id')
+                    // ->join('course_user', 'course_user.course_id', '=', 'courses.id')
                     ->join('vendors', 'vendors.id', '=', 'users.vendor_id')
                     ->where('courses.published', '=', 1)
                     ->select('users.first_name','users.id','users.id as user_id','users.last_name','users.email','users.confirmed','courses.title','vendors.company_name','orders.amount as amount_collected','orders.created_at','courses.price','orders.status','courses.id as course_id')
                     ->get();
         }
-
         return \DataTables::of($courses)
             ->addIndexColumn()
             ->addColumn('completed', function ($q) {
@@ -272,9 +272,17 @@ class ReportController extends Controller
                 }
                 return $score;
             })->editColumn('created_at',function($q){
-                return date("d, F Y H:s:i", strtotime($q->created_at));
-            })->addColumn('expiry',function($q){
-                return date("d, F Y H:s:i", strtotime("+1 year",strtotime($q->created_at)));
+                // return date("d, F Y H:s:i", strtotime($q->created_at));
+                return [
+                   'display' => date("d, F Y H:s:i", strtotime($q->created_at)),
+                   'timestamp' => Carbon::parse($q->created_at)->timestamp
+                ];
+            })->editColumn('expiry',function($q){
+                // return date("d, F Y H:s:i", strtotime("+1 year",strtotime($q->created_at)));
+                 return [
+                   'display' => date("d, F Y H:s:i", strtotime("+1 year",strtotime($q->created_at))),
+                   'timestamp' =>Carbon::parse($q->created_at)->addYear()->timestamp
+                ];
             })
             ->make();
     }

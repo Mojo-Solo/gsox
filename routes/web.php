@@ -19,6 +19,10 @@ Route::get('site/shutdown', function(){
 Route::get('site/live', function(){
     return Artisan::call('up');
 }); 
+
+Route::get('/testing',function(){
+    dd(auth()->user()->roles);
+});
 /*
  * Global Routes
  * Routes that are used between both frontend and backend.

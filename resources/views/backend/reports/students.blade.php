@@ -58,8 +58,8 @@
 @stop
 
 @push('after-scripts')
+<script src="https://cdn.datatables.net/plug-ins/1.10.21/sorting/date-euro.js"></script>
     <script>
-
         $(document).ready(function () {
             var course_route = '{{route('admin.reports.get_students_data')}}';
 
@@ -85,6 +85,8 @@
                     'colvis'
                 ],
                 ajax: course_route,
+                
+
                 columns: [
 
                     {data: "id", name: 'id', width: '8%'},
@@ -119,8 +121,8 @@
                     {data: "last_viewed", name: 'last_viewed',render:function(data,type,row){
                         return '<a href="'+data['resume_link']+'">'+data['name']+'</a>';
                     }},
-                    {data: "created_at", name: 'created_at'},
-                    {data: "expiry", name: 'expiry'},
+                    {data:{_: 'created_at.display', sort: 'created_at.timestamp'}, name: 'created_at.timestamp',class:'date'},
+                    {data: {_: 'expiry.display', sort: 'expiry.timestamp'}, name: 'expiry.timestamp',class:'date'},
                 ],
                 language:{
                     url : "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/{{$locale_full_name}}.json",
@@ -130,7 +132,7 @@
                         csv : '{{trans("datatable.csv")}}',
                     }
                 },
-                order:[[0,"desc"]],
+                order:[[12,"desc"]],
                 createdRow: function (row, data, dataIndex) {
                     $(row).attr('data-entry-id', data.id);
                 },
