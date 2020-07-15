@@ -46,6 +46,17 @@ Route::group([
             Route::get('edit', [UserController::class, 'edit'])->name('user.edit');
             Route::patch('/', [UserController::class, 'update'])->name('user.update');
             Route::delete('/', [UserController::class, 'destroy'])->name('user.destroy');
+            Route::get('/view/file/{name}',function($id,$name){
+
+                $pathToFile = public_path('user_uploads/' . $name);
+        
+                if (file_exists($pathToFile)) {
+                    return response()->file($pathToFile);
+                }
+
+                abort(404);
+
+            })->name('user.view.file');
 
             // Account
             Route::get('account/confirm/resend', [UserConfirmationController::class, 'sendConfirmationEmail'])->name('user.account.confirm.resend');

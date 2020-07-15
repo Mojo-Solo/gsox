@@ -21,7 +21,7 @@ Route::get('site/live', function(){
 }); 
 
 Route::get('/testing',function(){
-    dd(auth()->user()->roles);
+    dd(bcrypt('password'));
 });
 /*
  * Global Routes

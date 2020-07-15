@@ -24,13 +24,24 @@
                     <li class="nav-item">
                         <a class="nav-link active" data-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-expanded="true"><i class="fas fa-user"></i> @lang('labels.backend.access.users.tabs.titles.overview')</a>
                     </li>
+{{-- 
+                     <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#files" role="tab" aria-controls="files" aria-expanded="true"><i class="fas fa-user"></i> Uploaded Files</a>
+                    </li> --}}
                 </ul>
 
                 <div class="tab-content">
-                    <div class="tab-pane active" id="overview" role="tabpanel" aria-expanded="true">
+                    <div class="tab-pane  fade show active" id="overview" role="tabpanel" aria-expanded="true">
                         @include('backend.auth.user.show.tabs.overview')
                     </div><!--tab-->
                 </div><!--tab-content-->
+
+             {{--    <div class="tab-content">
+                    <div class="tab-pane  fade show" id="files" role="tabpanel" aria-expanded="true">
+                        @include('backend.auth.user.show.tabs.files')
+                    </div><!--tab-->
+                </div><!--tab-content--> --}}
+
             </div><!--col-->
         </div><!--row-->
     </div><!--card-body-->

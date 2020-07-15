@@ -1418,6 +1418,7 @@ return array (
         'first_name' => 'First Name',
         'last_name' => 'Last Name',
         'update_information' => 'Update Information',
+        'upload_file' => 'Upload Files',
       ),
     ),
     'faq' => 

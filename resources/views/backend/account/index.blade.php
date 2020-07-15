@@ -19,6 +19,10 @@
                                 <a href="#edit" class="nav-link" aria-controls="edit" role="tab" data-toggle="tab">@lang('labels.frontend.user.profile.update_information')</a>
                             </li>
 
+                            <li class="nav-item">
+                                <a href="#upload" class="nav-link" aria-controls="upload" role="tab" data-toggle="tab">@lang('labels.frontend.user.profile.upload_file')</a>
+                            </li>
+
                             @if($logged_in_user->canChangePassword())
                                 <li class="nav-item">
                                     <a href="#password" class="nav-link" aria-controls="password" role="tab" data-toggle="tab">@lang('navs.frontend.user.change_password')</a>
@@ -32,6 +36,10 @@
 
                             <div role="tabpanel" class="tab-pane fade show pt-3" id="edit" aria-labelledby="edit-tab">
                                 @include('backend.account.tabs.edit')
+                            </div><!--tab panel profile-->
+
+                            <div role="tabpanel" class="tab-pane fade show pt-3" id="upload" aria-labelledby="upload-tab">
+                                @include('backend.account.tabs.upload')
                             </div><!--tab panel profile-->
 
                             @if($logged_in_user->canChangePassword())

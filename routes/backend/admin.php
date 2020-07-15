@@ -131,9 +131,12 @@ Route::post('media/remove', ['uses' => 'Admin\MediaController@destroy', 'as' => 
 
 //===== User Account Routes =====//
 Route::group(['middleware' => ['auth', 'password_expires']], function () {
-    Route::get('account', [AccountController::class, 'index'])->name('account');
+    Route::get('account', [AccountController::class, 'index'])->name('account'); 
     Route::patch('account', [UpdatePasswordController::class, 'update'])->name('account.post');
     Route::patch('profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('profile/file/upload', [ProfileController::class, 'uploadFiles'])->name('profile.file.upload');
+    Route::get('profile/file/upload/{id}', [ProfileController::class, 'deleteFiles'])->name('profile.file.delete');
     Route::patch('profile/update/vendor', [ProfileController::class, 'updateVendor'])->name('profile.updateVendor');
 });
 

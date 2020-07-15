@@ -49,4 +49,5 @@ class ProfileController extends Controller
 
         return redirect()->route('frontend.user.account')->withFlashSuccess(__('strings.frontend.user.profile_updated'));
     }
+
 }

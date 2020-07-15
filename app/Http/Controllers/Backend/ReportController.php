@@ -341,6 +341,7 @@ class ReportController extends Controller
     }
 
     public function getinvoicesData(Request $request){
+
         $from=(isset($_GET['from']))?$_GET['from']:'';
         $to=(isset($_GET['to']))?$_GET['to']:'';
         $statues=array();
@@ -499,7 +500,10 @@ class ReportController extends Controller
                     return "UnPaid";
                 }
             })->editColumn('created_at',function($q){
-                return date("d, F Y H:s:i", strtotime($q->created_at));
+                return [
+                   'display' => date("d, F Y H:s:i", strtotime($q->created_at)),
+                   'timestamp' => Carbon::parse($q->created_at)->timestamp
+                ];
             })->addColumn('expiry',function($q){
                 return date("d, F Y H:s:i", strtotime("+1 year",strtotime($q->created_at)));
             })

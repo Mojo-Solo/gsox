@@ -15,7 +15,6 @@
     </style>
 @endpush
 @section('content')
-
     <div class="card">
         <div class="card-header">
             <h3 class="page-title d-inline">Invoices Report</h3>
@@ -139,7 +138,8 @@
                             return '<input type="checkbox" name="checkbox[]" data-id="'+data+'" id="checkbox'+data+'" />';
                         },
                     },
-                    {data: "created_at", name: 'created_at'},
+                    // {data: "created_at", name: 'created_at'},
+                     {data:{_: 'created_at.display', sort: 'created_at.timestamp'}, name: 'created_at.timestamp',class:'date'},
                     {data: "user_id", name: 'user_id'},
                     {data: "user_email", name: 'user_email'},
                     {data: "title", name: 'title'},

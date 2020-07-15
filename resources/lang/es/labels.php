@@ -1130,6 +1130,7 @@ return array (
         'first_name' => 'Nombre',
         'last_name' => 'Apellidos',
         'update_information' => 'Actualizar la información',
+        'upload_file' => 'Actualizar la información',
       ),
     ),
     'Supervisor' => 

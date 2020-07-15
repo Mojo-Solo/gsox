@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Backend\Auth\User;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\Frontend\Auth\UserRepository;
 use App\Http\Requests\Frontend\User\UpdateProfileRequest;
 use App\Http\Requests\Frontend\User\UpdateVendorProfileRequest;
+use App\Models\Auth\User;
 use App\Models\Vendor;
-use Request;
+use App\Repositories\Frontend\Auth\UserRepository;
 use File;
+use Illuminate\Http\Request as CustomRequest;
+use Request;
 /**
  * Class ProfileController.
  */
@@ -30,7 +32,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * @param UpdateProfileRequest $request
+     * @param UpdateProfileRequest request()
      *
      * @return mixed
      * @throws \App\Exceptions\GeneralException
@@ -87,5 +89,66 @@ class ProfileController extends Controller
         }
         $vendor->save();
         return redirect()->route('admin.account')->withFlashSuccess(__('strings.frontend.user.profile_updated'));
+    }
+
+    public function uploadFiles(CustomRequest $request)
+    {
+        $request->validate([
+
+                'file' => 'required',
+
+                'file.*' => 'mimes:doc,pdf,docx,zip'
+
+        ]);
+
+        $oldImages = auth()->user()->file_uploads != null ? json_decode(auth()->user()->file_uploads) : [];
+        
+        if ($files = request()->file('file'))
+        {
+            foreach ($files as $file)
+            {
+                $name = $file->getClientOriginalExtension();
+                $realName = rand(1, 100) . uniqid() . 'file' . '.' . $name;
+                $file->move(public_path('user_uploads'), $realName);
+                $images[] = $realName;
+            }
+        }
+
+        $updatedImages = is_array($oldImages) ? array_merge($images, $oldImages) : $images;
+        
+        $user  = User::findOrFail(auth()->user()->id);
+        $user->file_uploads = json_encode($updatedImages);
+        $user->save();
+
+         return redirect()->route('admin.account')->withFlashSuccess(__('strings.frontend.user.profile_updated'));
+    }
+
+    public function deleteFiles($image)
+    {
+        $user = auth()->user();
+
+       $arr = json_decode($user->file_uploads);
+
+        if (in_array($image, $arr))
+        {
+            if(file_exists(public_path('user_uploads/' . $image)))
+            {
+                unlink(public_path('user_uploads/' . $image));
+            }
+            
+            $index = array_search($image, $arr);
+            unset($arr[$index]);
+        }
+        else
+        {
+            return back()->withFlashSuccess('Something wrong!');
+        }
+
+        $json = json_encode(array_values($arr));
+
+       $user->file_uploads = $json;
+        $user->update();
+
+        return back()->withFlashSuccess('File Deleted successfully!');
     }
 }
