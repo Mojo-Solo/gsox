@@ -6,7 +6,7 @@
         <div class="col">
             <div class="form-group">
                 <div class="form-group">
-                    <label for="">{{ __('validation.attributes.frontend.password') }}</label>
+                    <label for="">Upload Files</label>
                     <input type="file" class="form-control" name="file[]" multiple="multiple">
                 </div>
             </div><!--form-group-->
@@ -17,7 +17,7 @@
     <div class="row">
         <div class="col">
             <div class="form-group mb-0 clearfix">
-                <button type="submit" class="btn btn-primary">{{ __('labels.general.buttons.update') . ' ' . __('validation.attributes.frontend.password') }}</button>
+                <button type="submit" class="btn btn-primary">Upload</button>
             </div><!--form-group-->
         </div><!--col-->
     </div><!--row-->
