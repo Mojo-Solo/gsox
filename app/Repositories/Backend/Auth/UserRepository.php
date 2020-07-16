@@ -196,7 +196,7 @@ class UserRepository extends BaseRepository
         $order->user_id = $user->id;
         $order->reference_no = str_random(8);
         $order->amount = $totalSum;
-        $order->status = 1;
+        $order->status = 0;
         $order->coupon_id = 0;
         $order->payment_type = 3;
         $order->save();
