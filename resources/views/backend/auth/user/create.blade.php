@@ -192,6 +192,16 @@
                                 {{ Form::select('vendor_id', $vendors, null,['class'=>'select2 form-control','id' => 'vendor_id']) }}
                             </div><!--col-->
                         </div>
+
+                         <div class="form-group row" id="courses" style="display: none;">
+                            <label class='col-md-2 form-control-label'>Courses</label>
+                            <div class="col-md-10">
+                               <select name="courses_id[]" id="courses_id" class="form-control" multiple="multiple" required="required">
+                                   
+                               </select>
+                            </div><!--col-->
+                        </div>
+
                         <div class="form-group row" id="clients_div" style="display: none;">
                             {!! Form::label('client_id',trans('labels.backend.bundles.fields.Client'), ['class' => 'control-label']) !!}
                             <div class="col-md-10">
@@ -236,6 +246,31 @@
             $('#vendors_div').hide();
             $('#vendor_id').attr('required',false);
         }
+
+        $('#vendor_id').on('change',function(){
+                 var id = $(this).val();
+
+               $.ajax({
+                  type:'post',
+                  url: '{{ url('/get/client/courses') }}',
+                  data : {"_token": "{{ csrf_token() }}",'vendor':id},
+                  success: function(data){
+                    if (data.data.error == '') 
+                    {
+                        $('#courses').show();
+                        $('#courses_id').html(data.data.html);
+                    }
+                    else
+                    {
+                        alert(data.data.error);
+                        $('#courses').hide();
+
+                    }
+                    // $('#hometeam').html(data['data']);
+                    // $('#awayteam').html(data['data']);
+                  }
+              });
+        });
     });
 </script>
 @endsection

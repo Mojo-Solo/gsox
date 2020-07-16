@@ -2,22 +2,24 @@
 
 namespace App\Repositories\Backend\Auth;
 
-use App\Models\Auth\User;
-use Illuminate\Support\Facades\DB;
-use App\Exceptions\GeneralException;
-use App\Repositories\BaseRepository;
-use App\Events\Backend\Auth\User\UserCreated;
-use App\Events\Backend\Auth\User\UserUpdated;
-use App\Events\Backend\Auth\User\UserRestored;
 use App\Events\Backend\Auth\User\UserConfirmed;
-use Illuminate\Pagination\LengthAwarePaginator;
+use App\Events\Backend\Auth\User\UserCreated;
 use App\Events\Backend\Auth\User\UserDeactivated;
-use App\Events\Backend\Auth\User\UserReactivated;
-use App\Events\Backend\Auth\User\UserUnconfirmed;
 use App\Events\Backend\Auth\User\UserPasswordChanged;
-use App\Notifications\Backend\Auth\UserAccountActive;
 use App\Events\Backend\Auth\User\UserPermanentlyDeleted;
+use App\Events\Backend\Auth\User\UserReactivated;
+use App\Events\Backend\Auth\User\UserRestored;
+use App\Events\Backend\Auth\User\UserUnconfirmed;
+use App\Events\Backend\Auth\User\UserUpdated;
+use App\Exceptions\GeneralException;
+use App\Models\Auth\User;
+use App\Models\Course;
+use App\Models\Order;
+use App\Notifications\Backend\Auth\UserAccountActive;
 use App\Notifications\Frontend\Auth\UserNeedsConfirmation;
+use App\Repositories\BaseRepository;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class UserRepository.
@@ -127,6 +129,20 @@ class UserRepository extends BaseRepository
                 $user->syncRoles($data['roles']);
                 $user->syncPermissions($data['permissions']);
 
+                $courses = array();
+
+                if (isset($data['courses_id'])) {
+                    
+                    for ($i=0; $i < count($data['courses_id']); $i++) { 
+                        $courses[$i]['user_id'] = $user->id;
+                        $courses[$i]['course_id'] = $data['courses_id'][$i];
+                    }
+                    
+                    \DB::table('course_user')->insert($courses);
+
+                    $this->offlinePayment($user,$data['courses_id']);
+                }
+
                 //Send confirmation email if requested and account approval is off
                 if (isset($data['confirmation_email']) && $user->confirmed == 0 && ! config('access.users.requires_approval')) {
                     $user->notify(new UserNeedsConfirmation($user->confirmation_code));
@@ -139,6 +155,62 @@ class UserRepository extends BaseRepository
 
             throw new GeneralException(__('exceptions.backend.access.users.create_error'));
         });
+    }
+
+     public function offlinePayment($user,$courses)
+    {
+        //Making Order
+        $order = $this->makeOrder($user,$courses);
+        $order->payment_type = 3;
+        $order->status = 0;
+        $order->save();
+        // $content = [];
+        // $items = [];
+        // $counter = 0;
+        // foreach (Cart::session(auth()->user()->id)->getContent() as $key => $cartItem) {
+        //     $counter++;
+        //     array_push($items, ['number' => $counter, 'name' => $cartItem->name, 'price' => $cartItem->price]);
+        // }
+
+        // $content['items'] = $items;
+        // $content['total'] = Cart::session(auth()->user()->id)->getTotal();
+        // $content['reference_no'] = $order->reference_no;
+
+        // try {
+        //     \Mail::to(auth()->user()->email)->send(new OfflineOrderMail($content));
+        // } catch (\Exception $e) {
+        //     \Log::info($e->getMessage() . ' for order ' . $order->id);
+        // }
+
+        // Cart::session(auth()->user()->id)->clear();
+        // \Session::flash('success', trans('labels.frontend.cart.offline_request'));
+        // return redirect()->route('courses.all');
+    }
+
+     private function makeOrder($user,$courses)
+    {
+        $courses = Course::whereIn('id',$courses)->get();
+        $totalSum = $courses->sum('price');
+
+        $order = new Order();
+        $order->user_id = $user->id;
+        $order->reference_no = str_random(8);
+        $order->amount = $totalSum;
+        $order->status = 1;
+        $order->coupon_id = 0;
+        $order->payment_type = 3;
+        $order->save();
+        //Getting and Adding items
+        foreach ($courses as $cartItem) {
+            $type = 'App\Models\Course';
+            $order->items()->create([
+                'item_id' => $cartItem->id,
+                'item_type' => $type,
+                'price' => $cartItem->price
+            ]);
+        }
+
+        return $order;
     }
 
     /**

@@ -1,7 +1,9 @@
 <?php
 
-use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\LanguageController;
+use App\Models\Course;
+use App\Models\Vendor;
 Route::get('clear', function () {  
     Artisan::call('up');  
     Artisan::call('config:cache');
@@ -196,3 +198,41 @@ Route::get('cron/backup', function () {
     Artisan::call('schedule:run');
     dd("Done Backup Has Been Started");
 });
+
+Route::post('/get/client/courses',function()
+{
+    $errorBag['error'] = '';
+    $html = '';
+    $vendor = request()->vendor;
+
+    $vendor = Vendor::where('id',$vendor)->first();
+
+    if ($vendor) {
+        if ($vendor->invoicing == 0) 
+        {
+            $errorBag['error'] = 'Enable invoicing for vendor to register student for courses.';
+        }
+        else
+        {
+                $clients = explode(",", $vendor->clients);
+
+                $courses = Course::whereIn('client_id',$clients)->where('published',1)->get();
+
+                if ($courses->count() > 0) {
+                        // $html .= '<option disabled selected value>Select Course</option>';
+                        foreach ($courses as $value) {
+                            $html .=  '<option value="'.$value->id.'">'.
+                                           $value->title 
+                                      .'</option>';
+                        }
+
+                        $errorBag['html'] = $html;
+                }
+               
+        }
+    }
+
+  
+    return response()->json(['data' => $errorBag]);
+});
+

@@ -7,7 +7,7 @@
             <div class="form-group">
                 <div class="form-group">
                     <label for="">Upload Files</label>
-                    <input type="file" class="form-control" name="file[]" multiple="multiple">
+                    <input type="file" class="form-control" name="file">
                 </div>
             </div><!--form-group-->
         </div><!--col-->

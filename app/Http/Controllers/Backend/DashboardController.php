@@ -76,6 +76,7 @@ class DashboardController extends Controller
                 $recent_contacts = array();
             } else {
                 $purchased_courses = auth()->user()->purchasedCourses();
+                
                 if(auth()->user()->hasRole('student')) {
                     $available_courses = auth()->user()->availableCourses();
                 }
