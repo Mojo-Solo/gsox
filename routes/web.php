@@ -3,6 +3,7 @@
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\LanguageController;
 use App\Models\Course;
+use App\Models\Order;
 use App\Models\Vendor;
 Route::get('clear', function () {  
     Artisan::call('up');  
@@ -23,7 +24,17 @@ Route::get('site/live', function(){
 }); 
 
 Route::get('/testing',function(){
-    dd(bcrypt('password'));
+    $orders = Order::all();
+    foreach ($orders as $value) {
+        if ($value->payment_type == 3) {
+            
+            $value->items()->update(['invoice_status' => 0]);
+        }
+        else
+        {
+            $value->items()->update(['invoice_status' => 1]);
+        }
+    }
 });
 /*
  * Global Routes

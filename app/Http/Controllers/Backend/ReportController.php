@@ -376,9 +376,9 @@ class ReportController extends Controller
                 ->join('orders', 'order_items.order_id', '=', 'orders.id')
                 ->where('orders.payment_type',3)
                 ->whereIn('orders.user_id',$user_ids)
-                ->whereIn('orders.status',$statues)
+                ->whereIn('invoice_status',$statues)
                 ->whereBetween('orders.created_at', [$from.' 00:00:00', $to.' 23:59:59'])
-                ->select('orders.user_id','orders.reference_no','orders.payment_type','orders.created_at','courses.id as course_id','orders.status','courses.title','courses.price','orders.amount','orders.id','orders.invoice_number')
+                ->select('order_items.invoice_status','order_items.id as invoice_id','orders.user_id','orders.reference_no','orders.payment_type','orders.created_at','courses.id as course_id','orders.status','courses.title','courses.price','orders.amount','orders.id','orders.invoice_number')
                 ->orderBy('orders.id','desc')
                 ->get();
             } else {
@@ -388,8 +388,8 @@ class ReportController extends Controller
                 ->join('orders', 'order_items.order_id', '=', 'orders.id')
                 ->where('orders.payment_type',3)
                 ->whereIn('orders.user_id',$user_ids)
-                ->whereIn('orders.status',$statues)
-                ->select('orders.user_id','orders.reference_no','orders.payment_type','orders.created_at','courses.id as course_id','orders.status','courses.title','courses.price','orders.amount','orders.id','orders.invoice_number')
+                ->whereIn('invoice_status',$statues)
+                ->select('order_items.invoice_status','order_items.id as invoice_id','orders.user_id','orders.reference_no','orders.payment_type','orders.created_at','courses.id as course_id','orders.status','courses.title','courses.price','orders.amount','orders.id','orders.invoice_number')
                 ->orderBy('orders.id','desc')
                 ->get();
             }
@@ -400,9 +400,9 @@ class ReportController extends Controller
                 ->join('courses', 'order_items.item_id', '=', 'courses.id')
                 ->join('orders', 'order_items.order_id', '=', 'orders.id')
                 ->where('orders.payment_type',3)
-                ->whereIn('orders.status',$statues)
+                ->whereIn('invoice_status',$statues)
                 ->whereBetween('orders.created_at', [$from.' 00:00:00', $to.' 23:59:59'])
-                ->select('orders.user_id','orders.reference_no','orders.payment_type','orders.created_at','courses.id as course_id','orders.status','courses.title','courses.price','orders.amount','orders.id','orders.invoice_number')
+                ->select('order_items.invoice_status','order_items.id as invoice_id','orders.user_id','orders.reference_no','orders.payment_type','orders.created_at','courses.id as course_id','orders.status','courses.title','courses.price','orders.amount','orders.id','orders.invoice_number')
                 ->orderBy('orders.id','desc')
                 ->get();
             } else {
@@ -411,8 +411,8 @@ class ReportController extends Controller
                 ->join('courses', 'order_items.item_id', '=', 'courses.id')
                 ->join('orders', 'order_items.order_id', '=', 'orders.id')
                 ->where('orders.payment_type',3)
-                ->whereIn('orders.status',$statues)
-                ->select('orders.user_id','orders.reference_no','orders.payment_type','orders.created_at','courses.id as course_id','orders.status','courses.title','courses.price','orders.amount','orders.id','orders.invoice_number')
+                ->whereIn('invoice_status',$statues)
+                ->select('order_items.invoice_status','order_items.id as invoice_id','orders.user_id','orders.reference_no','orders.payment_type','orders.created_at','courses.id as course_id','orders.status','courses.title','courses.price','orders.amount','orders.id','orders.invoice_number')
                 ->orderBy('orders.id','desc')
                 ->get();
             }
@@ -490,10 +490,10 @@ class ReportController extends Controller
                 }
                 return '';
             })->editColumn('status',function($q){
-                if($q->status==1) {
+                if($q->invoice_status==1) {
                     return "Paid";
                 }
-                elseif($q->status==2) {
+                elseif($q->invoice_status==2) {
                     return "Failed";
                 }
                 else{
@@ -512,28 +512,31 @@ class ReportController extends Controller
 
     public function markAsPaid(Request $request) {
         if($request->ids) {
-            Order::whereIn('id',explode(",", $request->ids))->update(['status'=>1]);
+            $order = OrderItem::whereIn('id',explode(",", $request->ids))->update(['invoice_status' => 1]);
         }
         return redirect()->back()->with('success','Successfully marked as paid.');
     }
 
     public function markAsUnpaid(Request $request) {
         if($request->ids) {
-            Order::whereIn('id',explode(",", $request->ids))->update(['status'=>0]);
+            OrderItem::whereIn('id',explode(",", $request->ids))->update(['invoice_status'=>0]);
         }
         return redirect()->back()->with('success','Successfully marked as unpaid.');
     }
 
     public function deleteInvoice(Request $request) {
         if($request->ids) {
-            Order::whereIn('id',explode(",", $request->ids))->delete();
+            OrderItem::whereIn('id',explode(",", $request->ids))->delete();
         }
         return redirect()->back()->with('success','Successfully Deleted.');
     }
 
     public function generateInvoiceGroup(Request $request) {
         $ids=explode(",", $request->ids);
-        $orders=Order::whereIn('id',$ids)->get();
+        $order_items=OrderItem::whereIn('id',$ids)->pluck('order_id')->toArray();
+        
+        $orders=Order::whereIn('id',$order_items)->get();
+    
         $vendors=array();
         $order_ids=array();
         foreach ($orders as $key => $order) {

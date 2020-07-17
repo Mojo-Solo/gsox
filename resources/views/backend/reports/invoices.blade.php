@@ -134,7 +134,7 @@
                 ],
                 ajax: course_route,
                 columns: [
-                    {data: "id", name: 'id',searchable:false,sortable:false,render : function(data, type, row) {
+                    {data: "invoice_id", name: 'id',searchable:false,sortable:false,render : function(data, type, row) {
                             return '<input type="checkbox" name="checkbox[]" data-id="'+data+'" id="checkbox'+data+'" />';
                         },
                     },

@@ -206,7 +206,8 @@ class UserRepository extends BaseRepository
             $order->items()->create([
                 'item_id' => $cartItem->id,
                 'item_type' => $type,
-                'price' => $cartItem->price
+                'price' => $cartItem->price,
+                'invoice_status' => 0
             ]);
         }
 

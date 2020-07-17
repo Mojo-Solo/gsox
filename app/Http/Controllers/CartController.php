@@ -737,7 +737,8 @@ class CartController extends Controller
             $order->items()->create([
                 'item_id' => $cartItem->id,
                 'item_type' => $type,
-                'price' => $cartItem->price
+                'price' => $cartItem->price,
+                'invoice_status' => 1
             ]);
         }
         Cart::session(auth()->user()->id)->removeConditionsByType('coupon');
