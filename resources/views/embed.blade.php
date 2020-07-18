@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+
+	<style>
+		body {
+		  /*margin: 0;*/
+		}
+		iframe {
+		  height:calc(100vh - 4px);
+		  width:calc(100vw - 4px);
+		  box-sizing: border-box;
+		}
+	</style>
+
+	<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+	{{-- <div class="embed-responsive embed-responsive-16by9"> --}}
+		<iframe  src="https://excapade.com/login"  frameborder="0" allowfullscreen></iframe>
+	{{-- </div> --}}
+</body>
+</html>

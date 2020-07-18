@@ -23,18 +23,13 @@ Route::get('site/live', function(){
     return Artisan::call('up');
 }); 
 
-Route::get('/testing',function(){
-    $orders = Order::all();
-    foreach ($orders as $value) {
-        if ($value->payment_type == 3) {
-            
-            $value->items()->update(['invoice_status' => 0]);
-        }
-        else
-        {
-            $value->items()->update(['invoice_status' => 1]);
-        }
-    }
+Route::get('/demo',function(){
+    return view('embed');
+});
+
+Route::get('/woowoo',function(){
+    $orders = Order::pluck('payment_type');
+    dd($orders);
 });
 /*
  * Global Routes
