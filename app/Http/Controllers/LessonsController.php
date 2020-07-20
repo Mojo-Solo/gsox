@@ -318,7 +318,6 @@ class LessonsController extends Controller
         CourseProgress::where('course_id',$course->id)->where('user_id',\Auth::user()->id)->delete();
         CourseProgress::create(['model_type' => get_class($lesson),'model_id' => $lesson->id,'user_id' => \Auth::user()->id,'course_id' => $course->id]);
     }
-
     return view($this->path . '.courses.lesson', compact('course','lesson', 'previous_lesson', 'next_lesson', 'test_result',
             'purchased_course', 'test_exists', 'lessons', 'completed_lessons', 'item_type', 'inline_test_exists', 'inline_test', 'test_status', 'disable_next_btn','question_id'))->with('sequence',$sequence);
     }

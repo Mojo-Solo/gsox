@@ -79,6 +79,12 @@ class CertificateController extends Controller
             $certificate->url = $certificate_name;
             $certificate->uuid = $certuuid;
             $certificate->save();
+            
+            // dd($course);
+            \DB::table('course_student')->where('course_id',$request->course_id)
+            ->where('user_id',\Auth::id())
+            ->update(['completed_at' => Carbon::now()]);
+      
 
             $pdf = \PDF::loadView('certificate.index', compact('data','client_object','certuuid'))->setPaper('', 'landscape');
 

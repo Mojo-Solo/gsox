@@ -15,6 +15,57 @@
             width: 100%;
             text-align: center;
         }
+
+        table.dataTable th:nth-child(1) {
+          width: 20px;
+          max-width: 20px;
+          font-weight: bold;
+         /* word-break: break-all;*/
+          /*white-space: pre-line;*/
+        }
+
+        table.dataTable td:nth-child(1) {
+          width: 20px;
+          max-width: 20px;
+         /* word-break: break-all;*/
+          white-space: pre-line;
+        }
+
+       
+
+        table.dataTable th:nth-child(9) {
+          width: 62px;
+          max-width: 20px;
+          /*font-size:10px;*/
+          font-weight: bold;
+          /*word-break: break-all;*/
+          white-space: pre-line;
+        }
+
+        table.dataTable td:nth-child(9) {
+          width: 20px;
+          max-width: 20px;
+         /* word-break: break-all;*/
+          white-space: pre-line;
+        }
+
+        table.dataTable th:nth-child(10) {
+          width: 82px;
+          max-width: 20px;
+          /*font-size:10px;*/
+          font-weight: bold;
+          /*word-break: break-all;*/
+          /*white-space: pre-line;*/
+        }
+
+        table.dataTable td:nth-child(10) {
+          width: 20px;
+          max-width: 20px;
+         /* word-break: break-all;*/
+          /*white-space: pre-line;*/
+        }
+
+
     </style>
 @endpush
 @section('content')
@@ -30,19 +81,19 @@
                         <table id="myTable" class="table table-bordered table-striped ">
                             <thead>
                             <tr>
-                                <th>@lang('labels.general.sr_no')</th>
+                                <th>Sr</th>
                                 <th>Student Name</th>
-                                <th>Email</th>
-                                <th>Confirmed</th>
+                                {{-- <th>Email</th> --}}
+                                {{-- <th>Cd</th> --}}
                                 <th>@lang('labels.backend.reports.fields.course')</th>
                                 <th>Vendor Name</th>
-                                <th>Status</th>
-                                <th>Score</th>
-                                <th>Amount</th>
-                                <th>Amount Collected</th>
+                                {{-- <th>Status</th> --}}
+                                {{-- <th>Score</th> --}}
+                                <th>A</th>
+                                {{-- <th>AC</th> --}}
                                 <th>Last Viewed Timeline</th>
-                                <th>Training Date</th>
-                                <th>Expiration Date</th>
+                                <th>Purchase Date</th>
+                                <th>Course Completion Date</th>
                             </tr>
                             </thead>
 
@@ -93,31 +144,31 @@
                     {data: "first_name", name: 'first_name',orderable: false,render : function(data, type, row) {
                         return data+' '+row['last_name'];
                     }},
-                    {data: "email", name: 'email'},
-                    {data: "confirmed", name: 'confirmed',orderable: false,render : function(data, type, row) {
-                        if(data==0)
-                            return '<span class="badge badge-danger">No</span>';
-                        else
-                            return '<span class="badge badge-success">Yes</span>';
-                    }},
+                    // {data: "email", name: 'email'},
+                    // {data: "confirmed", name: 'confirmed',orderable: false,render : function(data, type, row) {
+                    //     if(data==0)
+                    //         return '<span class="badge badge-danger">No</span>';
+                    //     else
+                    //         return '<span class="badge badge-success">Yes</span>';
+                    // }},
                     {data: "title", name: 'title'},
                     {data: "company_name", name: 'company_name'},
-                    {data: "status", name: 'status',orderable: false,render : function(data, type, row) {
-                        if(data==0)
-                            return '<span class="badge badge-info">InProgress</span>';
-                        else
-                            return '<span class="badge badge-success">Completed</span>';
-                    }},
-                    {data: "score", name: 'score'},
+                    // {data: "status", name: 'status',orderable: false,render : function(data, type, row) {
+                    //     if(data==0)
+                    //         return '<span class="badge badge-info">InProgress</span>';
+                    //     else
+                    //         return '<span class="badge badge-success">Completed</span>';
+                    // }},
+                    // {data: "score", name: 'score'},
                     {data: "price", name: 'price',orderable: false,render : function(data, type, row) {
                         if(data==null || data=='null')
                             return '$0';
                         else
                             return '$'+data;
                     }},
-                    {data: "amount_collected", name: 'amount_collected',orderable: false,render : function(data, type, row) {
-                        return '$'+data;
-                    }},
+                    // {data: "amount_collected", name: 'amount_collected',orderable: false,render : function(data, type, row) {
+                    //     return '$'+data;
+                    // }},
                     {data: "last_viewed", name: 'last_viewed',render:function(data,type,row){
                         return '<a href="'+data['resume_link']+'">'+data['name']+'</a>';
                     }},
@@ -132,7 +183,7 @@
                         csv : '{{trans("datatable.csv")}}',
                     }
                 },
-                order:[[12,"desc"]],
+                order:[[7,"desc"]],
                 createdRow: function (row, data, dataIndex) {
                     $(row).attr('data-entry-id', data.id);
                 },
