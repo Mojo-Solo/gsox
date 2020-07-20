@@ -176,10 +176,14 @@ class ReportController extends Controller
                     ->join('courses', 'course_student.course_id', '=', 'courses.id')
                     ->join('orders', 'orders.user_id', '=', 'users.id')
                     // ->join('course_user', 'course_user.course_id', '=', 'courses.id')
+                    ->leftJoin("certificates",function($join){
+                            $join->on("certificates.user_id","=","course_student.user_id")
+                                ->on("certificates.course_id","=","course_student.course_id");
+                        })
                     ->join('vendors', 'vendors.id', '=', 'users.vendor_id')
                     ->where('courses.published', '=', 1)
                     ->whereIn('course_user.user_id',$user_ids)
-                    ->select('users.first_name','users.id','users.id as user_id','users.last_name','users.email','users.confirmed','courses.title','vendors.company_name','orders.amount as amount_collected','orders.created_at','courses.price','orders.status','courses.id as course_id','course_student.completed_at')
+                    ->select('users.first_name','users.id','users.id as user_id','users.last_name','users.email','users.confirmed','courses.title','vendors.company_name','orders.amount as amount_collected','orders.created_at','courses.price','orders.status','courses.id as course_id','certificates.created_at as completed_at')
                     ->get();
         } elseif(auth()->user()->hasRole('supervisor')) {
             $courses = DB::table('users')
@@ -187,20 +191,28 @@ class ReportController extends Controller
                     ->join('courses', 'course_student.course_id', '=', 'courses.id')
                     ->join('orders', 'orders.user_id', '=', 'users.id')
                     // ->join('course_user', 'course_user.course_id', '=', 'courses.id')
+                    ->leftJoin("certificates",function($join){
+                            $join->on("certificates.user_id","=","course_student.user_id")
+                                ->on("certificates.course_id","=","course_student.course_id");
+                        })
                     ->join('vendors', 'vendors.id', '=', 'users.vendor_id')
                     ->where('courses.published', '=', 1)
                     ->where('courses.client_id',auth()->user()->client_id)
-                    ->select('users.first_name','users.id','users.id as user_id','users.last_name','users.email','users.confirmed','courses.title','vendors.company_name','orders.amount as amount_collected','orders.created_at','courses.price','orders.status','courses.id as course_id','course_student.completed_at')
+                    ->select('users.first_name','users.id','users.id as user_id','users.last_name','users.email','users.confirmed','courses.title','vendors.company_name','orders.amount as amount_collected','orders.created_at','courses.price','orders.status','courses.id as course_id','certificates.created_at as completed_at')
                     ->get();
         } else {
             $courses = DB::table('users')
                     ->join('course_student', 'course_student.user_id', '=', 'users.id')
                     ->join('courses', 'course_student.course_id', '=', 'courses.id')
                     ->join('orders', 'orders.user_id', '=', 'users.id')
-                    // ->join('course_user', 'course_user.user_id', '=',  'course_student.user_id')
+                    // ->join('certificates', 'certificates.user_id', '=',  'course_student.user_id')
+                    ->leftJoin("certificates",function($join){
+                            $join->on("certificates.user_id","=","course_student.user_id")
+                                ->on("certificates.course_id","=","course_student.course_id");
+                        })
                     ->join('vendors', 'vendors.id', '=', 'users.vendor_id')
                     ->where('courses.published', '=', 1)
-                    ->select('users.first_name','users.id','users.id as user_id','users.last_name','users.email','users.confirmed','courses.title','vendors.company_name','orders.amount as amount_collected','orders.created_at','courses.price','orders.status','courses.id as course_id','course_student.completed_at')
+                    ->select('users.first_name','users.id','users.id as user_id','users.last_name','users.email','users.confirmed','courses.title','vendors.company_name','orders.amount as amount_collected','orders.created_at','courses.price','orders.status','courses.id as course_id','certificates.created_at as completed_at')
                     ->get();
         }
         return \DataTables::of($courses)
