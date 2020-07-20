@@ -34,7 +34,7 @@
        
 
         table.dataTable th:nth-child(9) {
-          width: 62px;
+          width: 72px;
           max-width: 20px;
           /*font-size:10px;*/
           font-weight: bold;
@@ -89,11 +89,12 @@
                                 <th>Vendor Name</th>
                                 {{-- <th>Status</th> --}}
                                 {{-- <th>Score</th> --}}
-                                <th>A</th>
+                                <th>Amount</th>
                                 {{-- <th>AC</th> --}}
                                 <th>Last Viewed Timeline</th>
                                 <th>Purchase Date</th>
                                 <th>Course Completion Date</th>
+                                <th>Certificate</th>
                             </tr>
                             </thead>
 
@@ -117,7 +118,7 @@
             $('#myTable').DataTable({
                 processing: true,
                 serverSide: true,
-                iDisplayLength: 10,
+                iDisplayLength: 25,
                 retrieve: true,
                 dom: 'lfBrtip<"actions">',
                 buttons: [
@@ -174,6 +175,10 @@
                     }},
                     {data:{_: 'created_at.display', sort: 'created_at.timestamp'}, name: 'created_at.timestamp',class:'date'},
                     {data: {_: 'expiry.display', sort: 'expiry.timestamp'}, name: 'expiry.timestamp',class:'date'},
+                    // {data: {_: 'certificates', sort: 'certificates'}, name: 'certificates',class:'date'},
+                    {data: "certificates", name: 'certificates',render:function(data,type,row){
+                        return data != null ? '<a href="{{ asset('storage/certificates/') }}'+'/'+data+'" class="btn btn-success">View</a>' : '';
+                    }},
                 ],
                 language:{
                     url : "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/{{$locale_full_name}}.json",

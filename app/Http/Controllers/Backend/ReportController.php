@@ -183,7 +183,7 @@ class ReportController extends Controller
                     ->join('vendors', 'vendors.id', '=', 'users.vendor_id')
                     ->where('courses.published', '=', 1)
                     ->whereIn('course_user.user_id',$user_ids)
-                    ->select('users.first_name','users.id','users.id as user_id','users.last_name','users.email','users.confirmed','courses.title','vendors.company_name','orders.amount as amount_collected','orders.created_at','courses.price','orders.status','courses.id as course_id','certificates.created_at as completed_at')
+                    ->select('users.first_name','users.id','users.id as user_id','users.last_name','users.email','users.confirmed','courses.title','vendors.company_name','orders.amount as amount_collected','orders.created_at','courses.price','orders.status','courses.id as course_id','certificates.created_at as completed_at','certificates.url')
                     ->get();
         } elseif(auth()->user()->hasRole('supervisor')) {
             $courses = DB::table('users')
@@ -198,7 +198,7 @@ class ReportController extends Controller
                     ->join('vendors', 'vendors.id', '=', 'users.vendor_id')
                     ->where('courses.published', '=', 1)
                     ->where('courses.client_id',auth()->user()->client_id)
-                    ->select('users.first_name','users.id','users.id as user_id','users.last_name','users.email','users.confirmed','courses.title','vendors.company_name','orders.amount as amount_collected','orders.created_at','courses.price','orders.status','courses.id as course_id','certificates.created_at as completed_at')
+                    ->select('users.first_name','users.id','users.id as user_id','users.last_name','users.email','users.confirmed','courses.title','vendors.company_name','orders.amount as amount_collected','orders.created_at','courses.price','orders.status','courses.id as course_id','certificates.created_at as completed_at','certificates.url')
                     ->get();
         } else {
             $courses = DB::table('users')
@@ -212,7 +212,7 @@ class ReportController extends Controller
                         })
                     ->join('vendors', 'vendors.id', '=', 'users.vendor_id')
                     ->where('courses.published', '=', 1)
-                    ->select('users.first_name','users.id','users.id as user_id','users.last_name','users.email','users.confirmed','courses.title','vendors.company_name','orders.amount as amount_collected','orders.created_at','courses.price','orders.status','courses.id as course_id','certificates.created_at as completed_at')
+                    ->select('users.first_name','users.id','users.id as user_id','users.last_name','users.email','users.confirmed','courses.title','vendors.company_name','orders.amount as amount_collected','orders.created_at','courses.price','orders.status','courses.id as course_id','certificates.created_at as completed_at','certificates.url')
                     ->get();
         }
         return \DataTables::of($courses)
@@ -297,6 +297,8 @@ class ReportController extends Controller
                     'display' => isset($q->completed_at) ? Carbon::parse($q->completed_at)->format('d,F Y H:s:i') : '',  
                    'timestamp' =>Carbon::parse($q->completed_at)->addYear()->timestamp
                 ];
+            })->editColumn('certificates',function($q){
+                return $q->url;
             })
             ->make();
     }
