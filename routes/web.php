@@ -31,6 +31,19 @@ Route::get('/woowoo',function(){
     $orders = Order::pluck('payment_type');
     dd($orders);
 });
+
+Route::get('/testing',function(){
+    $orders = Order::all();
+    foreach ($orders as $value) {
+        if ($value->payment_type == 3) {
+
+            $value->items()->update(['invoice_status' => 0]);
+        }
+        else
+        {
+            $value->items()->update(['invoice_status' => 1]);
+        }
+    }
 /*
  * Global Routes
  * Routes that are used between both frontend and backend.
