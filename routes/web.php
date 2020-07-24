@@ -44,6 +44,7 @@ Route::get('/testing',function(){
             $value->items()->update(['invoice_status' => 1]);
         }
     }
+    });
 /*
  * Global Routes
  * Routes that are used between both frontend and backend.
