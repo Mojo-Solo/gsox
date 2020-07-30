@@ -412,6 +412,7 @@ class CoursesController extends Controller
         $course = Course::findOrFail($id);
         $courseTimeline = $course->courseTimeline()->orderBy('sequence', 'asc')->get();
         $topics=Topic::where('course_id',$course->id)->get()->pluck('title', 'id')->toArray();
+
         return view('backend.courses.show', compact('course', 'lessons', 'tests', 'courseTimeline','topics'));
     }
 

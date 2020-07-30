@@ -3,7 +3,9 @@
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\LanguageController;
 use App\Models\Course;
+use App\Models\CourseTimeline;
 use App\Models\Order;
+use App\Models\Topic;
 use App\Models\Vendor;
 Route::get('clear', function () {  
     Artisan::call('up');  
@@ -254,5 +256,56 @@ Route::post('/get/client/courses',function()
 
   
     return response()->json(['data' => $errorBag]);
+});
+
+
+Route::get('let/duplicate',function(){
+    $course = Course::findOrFail(518);
+    $newTask = $course->replicate();
+    $course = $newTask->save();
+
+    // $newTask->id
+
+     $lessons = \App\Models\Lesson::where('course_id', 518)->get();
+
+   if ($lessons->count() > 0) {
+       foreach ($lessons as $lesson) {
+            $newLesson = $lesson->replicate();
+            $newLesson->course_id = $newTask->id;
+            $newLesson->save();
+       }
+   }
+
+    $tests = \App\Models\Test::where('course_id', 518)->get();
+
+    if ($tests->count() > 0) {
+       foreach ($tests as $test) {
+            $newtest = $test->replicate();
+            $newtest->course_id = $newTask->id;
+            $newtest->save();
+       }
+   }
+
+    $topics=Topic::where('course_id',518)->get();
+
+    if ($topics->count() > 0) {
+       foreach ($topics as $topic) {
+            $newtopic = $topic->replicate();
+            $newtopic->course_id = $newTask->id;
+            $newtopic->save();
+       }
+   }
+
+    $timelines = CourseTimeline::where('course_id',518)->get();
+
+     if ($timelines->count() > 0) {
+       foreach ($timelines as $timeline) {
+            $newtimeline = $timeline->replicate();
+            $newtimeline->course_id = $newTask->id;
+            $newtimeline->save();
+       }
+   }
+
+   echo $newTask->id;
 });
 
