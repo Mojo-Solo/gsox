@@ -30,8 +30,23 @@ Route::get('/demo',function(){
 });
 
 Route::get('/woowoo',function(){
-    $orders = Order::pluck('payment_type');
-    dd($orders);
+   $cert = \DB::table('certificates')->where('course_id',518)->toSql();
+   echo $cert;
+    // if ($cert->count() > 0) {
+    //    foreach ($cert as $lesson) {
+    //     \DB::table('certificates')->where('id',$lesson->id)->update(['course_id' => 519]);
+    //    }
+    // }
+
+    $ch = \DB::table('chapter_students')->where('course_id',518)->toSql();
+    echo $ch;
+
+    // if ($ch->count() > 0) {
+    //    foreach ($ch as $lesson) {
+    //     \DB::table('chapter_students')->where('id',$lesson->id)->update(['course_id' => 519]);
+    //    }
+    // }
+
 });
 
 Route::get('/testing',function(){

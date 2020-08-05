@@ -83,6 +83,7 @@
                             <tr>
                                 <th>Sr</th>
                                 <th>Student Name</th>
+                                <th>Last Name</th>
                                 {{-- <th>Email</th> --}}
                                 {{-- <th>Cd</th> --}}
                                 <th>@lang('labels.backend.reports.fields.course')</th>
@@ -136,6 +137,13 @@
                     },
                     'colvis'
                 ],
+                 columnDefs: [
+                    {
+                        "targets": [ 2 ],
+                        "visible": false
+                    }
+                ],
+              
                 ajax: course_route,
                 
 
@@ -145,6 +153,8 @@
                     {data: "first_name", name: 'first_name',orderable: false,render : function(data, type, row) {
                         return data+' '+row['last_name'];
                     }},
+                   
+                    {data: "last_name", name: 'last_name'},
                     // {data: "email", name: 'email'},
                     // {data: "confirmed", name: 'confirmed',orderable: false,render : function(data, type, row) {
                     //     if(data==0)
@@ -188,7 +198,7 @@
                         csv : '{{trans("datatable.csv")}}',
                     }
                 },
-                order:[[7,"desc"]],
+                order:[[8,"desc"]],
                 createdRow: function (row, data, dataIndex) {
                     $(row).attr('data-entry-id', data.id);
                 },
