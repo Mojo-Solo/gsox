@@ -38,8 +38,8 @@ class LessonsController extends Controller
     }
 
     public function show($course_id='', $lesson_slug='', $type='', $token='')
-    
-{        $test_result = "";
+    {
+        $test_result = "";
         $completed_lessons = "";
         $purchased_course = "";
         $lessons = "";
@@ -248,12 +248,12 @@ class LessonsController extends Controller
                                 $test_status = 'passed';
                                 $question_id=$quiz_id;
                                 if (!ChapterStudent::where('model_id',$quiz_id)->where('course_id',$course->id)->where('user_id', \Auth::id())->count()) {
-                                    ChapterStudent::create([
-                                        'model_type' => "App\Models\Question",
-                                        'model_id' => $quiz_id,
-                                        'user_id' => auth()->user()->id,
-                                        'course_id' => $course->id
-                                    ]);
+                                    // ChapterStudent::create([
+                                    //     'model_type' => "App\Models\Question",
+                                    //     'model_id' => $quiz_id,
+                                    //     'user_id' => auth()->user()->id,
+                                    //     'course_id' => $course->id
+                                    // ]);
                                 }
                             }
                         }
@@ -263,12 +263,12 @@ class LessonsController extends Controller
 
             if($type =='topic' &&  !$inline_test_exists){
                 if (ChapterStudent::where('model_id',$lesson->id)->where('user_id', \Auth::id())->count() == 0) {
-                    ChapterStudent::create([
-                        'model_type' => get_class($lesson),
-                        'model_id' => $lesson->id,
-                        'user_id' => auth()->user()->id,
-                        'course_id' => $course_id
-                    ]);
+                    // ChapterStudent::create([
+                    //     'model_type' => get_class($lesson),
+                    //     'model_id' => $lesson->id,
+                    //     'user_id' => auth()->user()->id,
+                    //     'course_id' => $course_id
+                    // ]);
                 }  
             }
             if(($inline_test_exists && $test_status !='passed') || ($test_exists && $test_status !='passed')){
@@ -294,22 +294,22 @@ class LessonsController extends Controller
     }
     if($previous_lesson) {
         if (!ChapterStudent::where('model_id',$previous_lesson->model_id)->where('course_id',$course->id)->where('user_id', \Auth::id())->count()) {
-            ChapterStudent::create([
-                'model_type' => $previous_lesson->model_type,
-                'model_id' => $previous_lesson->model_id,
-                'user_id' => \Auth::user()->id,
-                'course_id' => $course->id
-            ]);
+            // ChapterStudent::create([
+            //     'model_type' => $previous_lesson->model_type,
+            //     'model_id' => $previous_lesson->model_id,
+            //     'user_id' => \Auth::user()->id,
+            //     'course_id' => $course->id
+            // ]);
         }
     }
     if(!empty($lesson) && $lesson->id==CourseTimeline::where('course_id',$course->id)->orderBy('sequence','DESC')->first()->model_id) {
         if (!ChapterStudent::where('model_id',$lesson->id)->where('course_id',$course->id)->where('user_id', \Auth::id())->count()) {
-            ChapterStudent::create([
-                'model_type' => get_class($lesson),
-                'model_id' => $lesson->id,
-                'user_id' => \Auth::user()->id,
-                'course_id' => $course->id
-            ]);
+            // ChapterStudent::create([
+            //     'model_type' => get_class($lesson),
+            //     'model_id' => $lesson->id,
+            //     'user_id' => \Auth::user()->id,
+            //     'course_id' => $course->id
+            // ]);
         }
     }
         $completed_lessons = \Auth::user()->chapters()->where('course_id', $course_id)->get()->pluck('model_id')->toArray();
@@ -324,9 +324,7 @@ class LessonsController extends Controller
 
     public function test($lesson_slug, Request $request)
     {
-
         $test = Test::where('slug', $lesson_slug)->firstOrFail();
-
         if(empty($request->get('questions'))) {
             return back()->with(['error'=>'Failed! Missing Options.']);
         }
@@ -351,17 +349,13 @@ class LessonsController extends Controller
              * Save all test result and show the points
              */
         }
-
-
         $total_questions=count($request->get('questions'));
         $total_passed=$test_score;
-
         if($test->passing_percentage){
             $passing_percentage=$test->passing_percentage;
         } else {
             $passing_percentage=0;
         }
-       
         if(($total_passed/$total_questions)*100 >= $passing_percentage) {
             $test_result = TestsResult::create([
                 'test_id' => $test->id,
