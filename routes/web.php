@@ -324,3 +324,12 @@ Route::get('let/duplicate',function(){
    echo $newTask->id;
 });
 
+Route::get('/let/false',function(){
+    if (false) {
+        dd('false');
+    }
+    else
+    {
+        dd('true');
+    }
+});

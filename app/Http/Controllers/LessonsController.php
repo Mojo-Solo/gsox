@@ -38,8 +38,8 @@ class LessonsController extends Controller
     }
 
     public function show($course_id='', $lesson_slug='', $type='', $token='')
-    {
-        $test_result = "";
+    
+{        $test_result = "";
         $completed_lessons = "";
         $purchased_course = "";
         $lessons = "";
@@ -324,7 +324,9 @@ class LessonsController extends Controller
 
     public function test($lesson_slug, Request $request)
     {
+
         $test = Test::where('slug', $lesson_slug)->firstOrFail();
+
         if(empty($request->get('questions'))) {
             return back()->with(['error'=>'Failed! Missing Options.']);
         }
@@ -349,13 +351,17 @@ class LessonsController extends Controller
              * Save all test result and show the points
              */
         }
+
+
         $total_questions=count($request->get('questions'));
         $total_passed=$test_score;
+
         if($test->passing_percentage){
             $passing_percentage=$test->passing_percentage;
         } else {
             $passing_percentage=0;
         }
+       
         if(($total_passed/$total_questions)*100 >= $passing_percentage) {
             $test_result = TestsResult::create([
                 'test_id' => $test->id,

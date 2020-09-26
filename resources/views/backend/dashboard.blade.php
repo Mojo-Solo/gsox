@@ -165,7 +165,7 @@
 
                             @if(count($purchased_courses) > 0)
                                 @foreach($purchased_courses as $item)
-
+                                   
                                     <div class="col-md-3 backend">
                                         <div class="best-course-pic-text position-relative border">
                                             <div class="best-course-pic position-relative overflow-hidden"
