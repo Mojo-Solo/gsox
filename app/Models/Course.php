@@ -198,13 +198,14 @@ class Course extends Model
             $completed_lessons = DB::table('chapter_students')->where('user_id',\Auth::user()->id)->where('course_id',$this->id)->distinct('model_id')->count();
         }
 
-        // dd($completed_lessons > 0);
+        // dd($this);
 
         if ($completed_lessons > 0 && $completed_lessons == FALSE) {
             $timelines=array();
             $timelines=DB::table('course_timeline')->where('course_id',$this->id)->distinct('model_id')->pluck('model_id')->toArray();
             $timelines=count($timelines);
-            if($this->id==479 && intval(($completed_lessons / $timelines) * 100)==99){
+            // $this->id==479 && 
+            if(intval(($completed_lessons / $timelines) * 100) == 99){
                 return 100;
             }
             if($completed_lessons > $timelines) {

@@ -204,7 +204,7 @@
                                                 ?>
                                                 <a href="{{ $resume_link }}" class="text-white text-center text-uppercase  bold-font btn-sm">
                                                 @if(auth()->check() && auth()->user()->hasRole('student') && auth()->user()->chapters()->where('course_id', $item->id)->count())
-                                                    @if($item->progress()==100)
+                                                    @if($item->progress() == 100)
                                                     Completed
                                                     @else
                                                     Resume
