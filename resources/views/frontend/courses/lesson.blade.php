@@ -150,10 +150,14 @@
     $forward=1;
     if(!empty($lesson) && get_class($lesson)=="App\Models\Test" && !empty($test_result) && count($lesson->questions) && (($test_result->test_result/count($lesson->questions))*100 >=$lesson->passing_percentage) ) {
         $forward=1;
+        dd('1')
     }if(!empty($lesson) && get_class($lesson)=="App\Models\Test" && !empty($test_result) && count($lesson->questions) && (($test_result->test_result/count($lesson->questions))*100 < $lesson->passing_percentage) ) {
         $forward=0;
+        dd('01');
+
     }elseif(!empty($lesson) && get_class($lesson)=="App\Models\Test" && empty($test_result)) {
         $forward=0;
+        dd('02');
     }
     $course_timelines=\App\Models\CourseTimeline::where('course_id',$course->id)->distinct('model_id')->orderBy('sequence','asc')->get();
     $item=(isset($course_timelines))?$course_timelines[0]:$course->courseTimeline()->distinct('model_id')->orderBy('sequence')->get()[0];
@@ -177,7 +181,7 @@
         return $headers['http_code'];
     }
 ?>
-  {{ dd($forward) }}
+
     <!-- Start of breadcrumb section
         ============================================= -->
     <section id="breadcrumb" class="breadcrumb-section relative-position backgroud-style">
