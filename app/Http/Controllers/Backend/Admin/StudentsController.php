@@ -70,7 +70,9 @@ class StudentsController extends Controller
      */
     public function create()
     {
+    
         if(auth()->user()->isAdmin() || auth()->user()->hasAnyPermission(['student_management_create']) || auth()->guard('vendor')->check() || (isset(auth()->user()->roles[0]) && auth()->user()->roles[0]->name=="manager") || auth()->user()->hasRole('supervisor')) {
+
             if((isset(auth()->user()->roles[0]) && auth()->user()->roles[0]->name=="manager")) 
             {
                 $vendors=Vendor::where('created_by',auth()->user()->id)->get()->pluck('company_name', 'id')->prepend('Please select', '');
@@ -103,7 +105,7 @@ class StudentsController extends Controller
 
             }
 
-
+            dd(auth()->user()->roles);
             return view('backend.students.create',compact('vendors'));
         }
         else {
