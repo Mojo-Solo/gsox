@@ -150,7 +150,7 @@
     $forward=1;
     if(!empty($lesson) && get_class($lesson)=="App\Models\Test" && !empty($test_result) && count($lesson->questions) && (($test_result->test_result/count($lesson->questions))*100 >=$lesson->passing_percentage) ) {
         $forward=1;
-        dd('1')
+        dd('1');
     }if(!empty($lesson) && get_class($lesson)=="App\Models\Test" && !empty($test_result) && count($lesson->questions) && (($test_result->test_result/count($lesson->questions))*100 < $lesson->passing_percentage) ) {
         $forward=0;
         dd('01');
