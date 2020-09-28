@@ -164,6 +164,8 @@
         $link=route('lessons.show',['id' => $course->id,'slug'=>$item->model->slug]);
     }
 
+
+
     function check_url($url) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -175,6 +177,7 @@
         return $headers['http_code'];
     }
 ?>
+  {{ dd($forward) }}
     <!-- Start of breadcrumb section
         ============================================= -->
     <section id="breadcrumb" class="breadcrumb-section relative-position backgroud-style">
@@ -654,7 +657,8 @@
 
                     <!-- /review overview -->
                 </div>
-                @if($forward==1 || get_class($lesson)!="App\Models\Test")
+          
+                @if($forward==1 || get_class($lesson) != "App\Models\Test")
                 <div class="col-md-3">
                     <div id="sidebar" class="sidebar">
                         <div class="course-details-Client ul-li">
