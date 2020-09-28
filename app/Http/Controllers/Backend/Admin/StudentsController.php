@@ -175,7 +175,7 @@ class StudentsController extends Controller
         //Making Order
         $order = $this->makeOrder($user,$courses);
         $order->payment_type = 3;
-        $order->status = 0;
+        $order->status = 1;
         $order->save();
     }
 
