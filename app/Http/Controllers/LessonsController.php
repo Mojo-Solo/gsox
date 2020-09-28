@@ -248,12 +248,12 @@ class LessonsController extends Controller
                                 $test_status = 'passed';
                                 $question_id=$quiz_id;
                                 if (!ChapterStudent::where('model_id',$quiz_id)->where('course_id',$course->id)->where('user_id', \Auth::id())->count()) {
-                                    // ChapterStudent::create([
-                                    //     'model_type' => "App\Models\Question",
-                                    //     'model_id' => $quiz_id,
-                                    //     'user_id' => auth()->user()->id,
-                                    //     'course_id' => $course->id
-                                    // ]);
+                                    ChapterStudent::create([
+                                        'model_type' => "App\Models\Question",
+                                        'model_id' => $quiz_id,
+                                        'user_id' => auth()->user()->id,
+                                        'course_id' => $course->id
+                                    ]);
                                 }
                             }
                         }
@@ -263,12 +263,13 @@ class LessonsController extends Controller
 
             if($type =='topic' &&  !$inline_test_exists){
                 if (ChapterStudent::where('model_id',$lesson->id)->where('user_id', \Auth::id())->count() == 0) {
-                    // ChapterStudent::create([
-                    //     'model_type' => get_class($lesson),
-                    //     'model_id' => $lesson->id,
-                    //     'user_id' => auth()->user()->id,
-                    //     'course_id' => $course_id
-                    // ]);
+
+                    ChapterStudent::create([
+                        'model_type' => get_class($lesson),
+                        'model_id' => $lesson->id,
+                        'user_id' => auth()->user()->id,
+                        'course_id' => $course_id
+                    ]);
                 }  
             }
             if(($inline_test_exists && $test_status !='passed') || ($test_exists && $test_status !='passed')){
@@ -294,22 +295,28 @@ class LessonsController extends Controller
     }
     if($previous_lesson) {
         if (!ChapterStudent::where('model_id',$previous_lesson->model_id)->where('course_id',$course->id)->where('user_id', \Auth::id())->count()) {
-            // ChapterStudent::create([
-            //     'model_type' => $previous_lesson->model_type,
-            //     'model_id' => $previous_lesson->model_id,
-            //     'user_id' => \Auth::user()->id,
-            //     'course_id' => $course->id
-            // ]);
+    
+            if ($previous_lesson->model_type != 'App\Models\Test') {
+                ChapterStudent::create([
+                    'model_type' => $previous_lesson->model_type,
+                    'model_id' => $previous_lesson->model_id,
+                    'user_id' => \Auth::user()->id,
+                    'course_id' => $course->id
+                ]);
+            }
+            
         }
     }
     if(!empty($lesson) && $lesson->id==CourseTimeline::where('course_id',$course->id)->orderBy('sequence','DESC')->first()->model_id) {
         if (!ChapterStudent::where('model_id',$lesson->id)->where('course_id',$course->id)->where('user_id', \Auth::id())->count()) {
-            // ChapterStudent::create([
-            //     'model_type' => get_class($lesson),
-            //     'model_id' => $lesson->id,
-            //     'user_id' => \Auth::user()->id,
-            //     'course_id' => $course->id
-            // ]);
+            if ($previous_lesson->model_type != 'App\Models\Test') {
+                ChapterStudent::create([
+                    'model_type' => get_class($lesson),
+                    'model_id' => $lesson->id,
+                    'user_id' => \Auth::user()->id,
+                    'course_id' => $course->id
+                ]);
+            }
         }
     }
         $completed_lessons = \Auth::user()->chapters()->where('course_id', $course_id)->get()->pluck('model_id')->toArray();
