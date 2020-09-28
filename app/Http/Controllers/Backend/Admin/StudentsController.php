@@ -13,6 +13,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
 use Yajra\DataTables\DataTables;
 use App\Models\Client;
+use App\Models\Order;
+use App\Models\Course;
 use App\Models\Vendor;
 use Hash;
 use DB;
@@ -57,6 +59,7 @@ class StudentsController extends Controller
             ->select('users.*')
             ->get();
         }
+
         return view('backend.students.index', compact('students'));
     }
 
@@ -68,20 +71,40 @@ class StudentsController extends Controller
     public function create()
     {
         if(auth()->user()->isAdmin() || auth()->user()->hasAnyPermission(['student_management_create']) || auth()->guard('vendor')->check() || (isset(auth()->user()->roles[0]) && auth()->user()->roles[0]->name=="manager") || auth()->user()->hasRole('supervisor')) {
-            if((isset(auth()->user()->roles[0]) && auth()->user()->roles[0]->name=="manager")) {
+            if((isset(auth()->user()->roles[0]) && auth()->user()->roles[0]->name=="manager")) 
+            {
                 $vendors=Vendor::where('created_by',auth()->user()->id)->get()->pluck('company_name', 'id')->prepend('Please select', '');
-            }elseif(auth()->user()->hasRole('supervisor')){
+            }
+            elseif(auth()->user()->hasRole('supervisor'))
+            {
                 $ids=array();
-                foreach(Vendor::orderBy('created_at', 'desc')->get() as $vendor) {
-                    if(in_array(auth()->user()->client_id, explode(",", $vendor->clients))) {
+
+                foreach(Vendor::orderBy('created_at', 'desc')->get() as $vendor) 
+                {
+                    if(in_array(auth()->user()->client_id, explode(",", $vendor->clients))) 
+                    {
                         array_push($ids, $vendor->id);
                     }
                 }
+
                 $vendors=Vendor::whereIn('id',$ids)->pluck('company_name', 'id')->prepend('Please select', '');
-            } else {
-                $vendors=Vendor::get()->pluck('company_name', 'id')->prepend('Please select', '');
+            } 
+            else 
+            {
+                // $vendors=Vendor::get()->pluck('company_name', 'id')->prepend('Please select', '');
+                $vendors = Vendor::where('id',auth()->user()->id)
+                    ->pluck('company_name','id')->prepend('Please select', '');
+
+                $clients =  Vendor::where('id',auth()->user()->id)
+                    ->pluck('clients');   
+
+                $ids = explode(",", $clients[0]);
+                $courses = Course::whereIn('client_id',$clients)->get();
+
             }
-            return view('backend.students.create',compact('vendors'));
+
+
+            return view('backend.students.create',compact('vendors','courses'));
         }
         else {
             abort(404);
@@ -113,13 +136,64 @@ class StudentsController extends Controller
                 'model_type' => 'App\Models\Auth\User',
                 'model_id' => $user->id,
             ];
+
             DB::table('model_has_roles')->insert($role);
+
+            $courses = array();
+
+            if (isset($request->courses)) {
+              
+                for ($i=0; $i < count($request->courses); $i++) { 
+                    $courses[$i]['user_id'] = $user->id;
+                    $courses[$i]['course_id'] = $request->courses[$i];
+                }
+                
+                \DB::table('course_user')->insert($courses);
+
+                $this->offlinePayment($user,$request->courses);
+            }
         }
         else{
             abort(404);
         }
 
         return redirect()->route('admin.students.index')->withFlashSuccess(trans('alerts.backend.general.created'));
+    }
+
+     public function offlinePayment($user,$courses)
+    {
+        //Making Order
+        $order = $this->makeOrder($user,$courses);
+        $order->payment_type = 3;
+        $order->status = 0;
+        $order->save();
+    }
+
+     private function makeOrder($user,$courses)
+    {
+        $courses = Course::whereIn('id',$courses)->get();
+        $totalSum = $courses->sum('price');
+
+        $order = new Order();
+        $order->user_id = $user->id;
+        $order->reference_no = str_random(8);
+        $order->amount = $totalSum;
+        $order->status = 0;
+        $order->coupon_id = 0;
+        $order->payment_type = 3;
+        $order->save();
+        //Getting and Adding items
+        foreach ($courses as $cartItem) {
+            $type = 'App\Models\Course';
+            $order->items()->create([
+                'item_id' => $cartItem->id,
+                'item_type' => $type,
+                'price' => $cartItem->price,
+                'invoice_status' => 0
+            ]);
+        }
+
+        return $order;
     }
 
 

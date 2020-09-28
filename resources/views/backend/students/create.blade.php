@@ -84,7 +84,7 @@
                         <div class="form-group row">
                             {{ html()->label(__('labels.backend.access.users.vendor'))->class('col-md-2 form-control-label')->for('vendor_id') }}
                             <div class="col-md-10">
-                                {{ Form::select('vendor_id', $vendors, null,['class'=>'select2 form-control','required','id' => 'vendor_id']) }}
+                                {{ Form::select('vendor_id', $vendors, null,['class'=>'select2 form-control','required','id' => 'vendor_id']) }} 
                             </div><!--col-->
                         </div>
 
@@ -122,6 +122,21 @@
                                 </div><!--col-->
                             </div><!--form-group-->
                         @endif
+
+                         <div class="form-group row">
+                           <label class="col-md-2 form-control-label">Courses</label>
+                            <div class="col-md-10">
+                                <select name="courses[]" id="inputCourses[]" multiple class="form-control select2">
+                                    <option value="">Select a course</option>
+                                    @if (isset($courses))
+                                       @forelse($courses as $course)
+                                        <option value="{{ $course->id }}">{{ $course->title }}</option>
+                                       @empty
+                                       @endforelse
+                                    @endif
+                                </select>
+                            </div><!--col-->
+                        </div>
                     </div><!--col-->
                 </div><!--row-->
             </div><!--card-body-->
