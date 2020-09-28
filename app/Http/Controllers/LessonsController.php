@@ -349,8 +349,11 @@ class LessonsController extends Controller
              * Save all test result and show the points
              */
         }
+
+
         $total_questions=count($request->get('questions'));
         $total_passed=$test_score;
+
         if($test->passing_percentage){
             $passing_percentage=$test->passing_percentage;
         } else {

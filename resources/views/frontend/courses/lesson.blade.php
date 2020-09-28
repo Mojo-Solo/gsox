@@ -147,19 +147,16 @@
 
 @section('content')
 <?php 
-    $forward=1;
-    if(!empty($lesson) && get_class($lesson)=="App\Models\Test" && !empty($test_result) && count($lesson->questions) && (($test_result->test_result/count($lesson->questions))*100 >= $lesson->passing_percentage) ) {
-        $forward=1;
-        (!empty($test_result)) ? dump($test_result->test_result) : '';
-    }if(!empty($lesson) && get_class($lesson)=="App\Models\Test" && !empty($test_result) && count($lesson->questions) && (($test_result->test_result/count($lesson->questions))*100 < $lesson->passing_percentage) ) {
-        $forward=0;
-        (!empty($test_result)) ? dump($test_result->test_result) : '';
-        
 
+//$lesson->questions
+//$lesson->randomquestions()
+    $forward=1;
+    if(!empty($lesson) && get_class($lesson)=="App\Models\Test" && !empty($test_result) && count($lesson->randomquestions()) && (($test_result->test_result/count($lesson->randomquestions()))*100 >=$lesson->passing_percentage) ) {
+        $forward=1;
+    }if(!empty($lesson) && get_class($lesson)=="App\Models\Test" && !empty($test_result) && count($lesson->randomquestions()) && (($test_result->test_result/count($lesson->randomquestions()))*100 < $lesson->passing_percentage) ) {
+        $forward=0;
     }elseif(!empty($lesson) && get_class($lesson)=="App\Models\Test" && empty($test_result)) {
         $forward=0;
-        (!empty($test_result)) ? dump($test_result->test_result) : '';
-      
     }
     $course_timelines=\App\Models\CourseTimeline::where('course_id',$course->id)->distinct('model_id')->orderBy('sequence','asc')->get();
     $item=(isset($course_timelines))?$course_timelines[0]:$course->courseTimeline()->distinct('model_id')->orderBy('sequence')->get()[0];
@@ -169,8 +166,6 @@
     if(in_array($item->model->id,$completed_lessons)) {
         $link=route('lessons.show',['id' => $course->id,'slug'=>$item->model->slug]);
     }
-
-
 
     function check_url($url) {
         $ch = curl_init();
@@ -183,7 +178,6 @@
         return $headers['http_code'];
     }
 ?>
-
     <!-- Start of breadcrumb section
         ============================================= -->
     <section id="breadcrumb" class="breadcrumb-section relative-position backgroud-style">
@@ -663,8 +657,7 @@
 
                     <!-- /review overview -->
                 </div>
-          
-                @if($forward==1 || get_class($lesson) != "App\Models\Test")
+                @if($forward==1 || get_class($lesson)!="App\Models\Test")
                 <div class="col-md-3">
                     <div id="sidebar" class="sidebar">
                         <div class="course-details-Client ul-li">
