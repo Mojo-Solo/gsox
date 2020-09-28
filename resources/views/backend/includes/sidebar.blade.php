@@ -130,7 +130,17 @@
 
                     </a>
                     <ul class="nav-dropdown-items">
+
+                        @if (auth()->guard('vendor')->check())
+                        <li class="nav-item ">
+                            <a class="nav-link {{ $request->segment(1) == 'students' ? 'active' : '' }}"
+                               href="{{ route('admin.reports.students') }}">@lang('menus.backend.sidebar.reports.students')
+                            </a>
+                        </li>
+                        @endif
+
                         @if ($logged_in_user->isAdmin() || (isset(auth()->user()->roles[0]) && auth()->user()->roles[0]->name=='manager'))
+                      
                         @if(isset(auth()->user()->roles[0]) && auth()->user()->roles[0]->name!='manager')
                         <li class="nav-item ">
                             <a class="nav-link {{ $request->segment(1) == 'sales' ? 'active' : '' }}"
@@ -139,6 +149,8 @@
                             </a>
                         </li>
                         @endif
+
+                      
                         <li class="nav-item ">
                             <a class="nav-link {{ $request->segment(1) == 'invoices' ? 'active' : '' }}"
                                href="{{ route('admin.reports.invoices') }}">
@@ -171,8 +183,6 @@
                     </ul>
                 </li>
             @endif
-
-
 
 
             @if ($logged_in_user->isAdmin() || $logged_in_user->hasAnyPermission(['blog_access','page_access','reason_access']))
@@ -432,7 +442,7 @@
                     </a>
 
                     <ul class="nav-dropdown-items">
-                       {{--  <li class="nav-item">
+                        <li class="nav-item">
                             <a class="nav-link {{ active_class(Active::checkUriPattern('admin/auth/user*')) }}"
                                href="{{ route('admin.auth.user.index') }}">
                                 @lang('labels.backend.access.users.management')
@@ -441,7 +451,7 @@
                                     <span class="badge badge-danger">{{ $pending_approval }}</span>
                                 @endif
                             </a>
-                        </li> --}}
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link {{ active_class(Active::checkUriPattern('admin/vendors*')) }}"
                                href="{{ route('admin.vendors.index') }}">

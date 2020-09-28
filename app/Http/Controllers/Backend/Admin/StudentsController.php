@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Gate;
 use Yajra\DataTables\DataTables;
 use App\Models\Client;
 use App\Models\Order;
+use App\Models\Bundle;
 use App\Models\Course;
 use App\Models\Vendor;
 use Hash;
@@ -175,8 +176,25 @@ class StudentsController extends Controller
         //Making Order
         $order = $this->makeOrder($user,$courses);
         $order->payment_type = 3;
+        $order->status = 0;
+        $order->save();
+
+        $order = Order::findOrfail($order->id);
         $order->status = 1;
         $order->save();
+
+        //Generating Invoice
+        generateInvoice($order);
+
+        foreach ($order->items as $orderItem) {
+            //Bundle Entries
+            if($orderItem->item_type == Bundle::class){
+               foreach ($orderItem->item->courses as $course){
+                   $course->students()->attach($order->user_id);
+               }
+            }
+            $orderItem->item->students()->attach($order->user_id);
+        }
     }
 
      private function makeOrder($user,$courses)
