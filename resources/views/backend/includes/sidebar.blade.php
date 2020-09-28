@@ -432,7 +432,7 @@
                     </a>
 
                     <ul class="nav-dropdown-items">
-                        <li class="nav-item">
+                       {{--  <li class="nav-item">
                             <a class="nav-link {{ active_class(Active::checkUriPattern('admin/auth/user*')) }}"
                                href="{{ route('admin.auth.user.index') }}">
                                 @lang('labels.backend.access.users.management')
@@ -441,7 +441,7 @@
                                     <span class="badge badge-danger">{{ $pending_approval }}</span>
                                 @endif
                             </a>
-                        </li>
+                        </li> --}}
                         <li class="nav-item">
                             <a class="nav-link {{ active_class(Active::checkUriPattern('admin/vendors*')) }}"
                                href="{{ route('admin.vendors.index') }}">
