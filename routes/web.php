@@ -325,11 +325,5 @@ Route::get('let/duplicate',function(){
 });
 
 Route::get('/let/false',function(){
-    if (false) {
-        dd('false');
-    }
-    else
-    {
-        dd('true');
-    }
+    dd(auth()->user()->roles->pluck('name'));
 });

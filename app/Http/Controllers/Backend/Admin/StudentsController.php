@@ -108,7 +108,6 @@ class StudentsController extends Controller
                     ->pluck('clients'); 
 
                 }
-                // $vendors=Vendor::get()->pluck('company_name', 'id')->prepend('Please select', '');
       
                 $ids = explode(",", $clients[0]);
                 $courses = Course::whereIn('client_id',$clients)->get();
