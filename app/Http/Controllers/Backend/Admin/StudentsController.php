@@ -91,15 +91,15 @@ class StudentsController extends Controller
             } 
             else 
             {
-                // $vendors=Vendor::get()->pluck('company_name', 'id')->prepend('Please select', '');
-                $vendors = Vendor::where('id',auth()->user()->id)
-                    ->pluck('company_name','id')->prepend('Please select', '');
+                $vendors=Vendor::get()->pluck('company_name', 'id')->prepend('Please select', '');
+                // $vendors = Vendor::where('id',auth()->user()->id)
+                //     ->pluck('company_name','id')->prepend('Please select', '');
 
-                $clients =  Vendor::where('id',auth()->user()->id)
-                    ->pluck('clients');   
+                // $clients =  Vendor::where('id',auth()->user()->id)
+                //     ->pluck('clients');   
 
-                $ids = explode(",", $clients[0]);
-                $courses = Course::whereIn('client_id',$clients)->get();
+                // $ids = explode(",", $clients[0]);
+                // $courses = Course::whereIn('client_id',$clients)->get();
 
             }
 
