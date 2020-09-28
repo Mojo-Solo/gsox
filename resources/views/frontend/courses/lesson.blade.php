@@ -153,12 +153,8 @@
     $forward=1;
     if(!empty($lesson) && get_class($lesson)=="App\Models\Test" && !empty($test_result) && count($lesson->randomquestions()) && (($test_result->test_result/count($lesson->randomquestions()))*100 >=$lesson->passing_percentage) ) {
         $forward=1;
-        dump(($test_result->test_result/count($lesson->randomquestions()))*100);
-        dump('1');
     }if(!empty($lesson) && get_class($lesson)=="App\Models\Test" && !empty($test_result) && count($lesson->randomquestions()) && (($test_result->test_result/count($lesson->randomquestions()))*100 < $lesson->passing_percentage) ) {
         $forward=0;
-        dump(($test_result->test_result/count($lesson->randomquestions()))*100);
-        dump('01');
     }elseif(!empty($lesson) && get_class($lesson)=="App\Models\Test" && empty($test_result)) {
         $forward=0;
     }
