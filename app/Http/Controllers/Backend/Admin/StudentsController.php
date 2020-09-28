@@ -93,22 +93,29 @@ class StudentsController extends Controller
             } 
             else 
             {
-                $vendors=Vendor::get()->pluck('company_name', 'id')->prepend('Please select', '');
-                // $vendors = Vendor::where('id',auth()->user()->id)
-                //     ->pluck('company_name','id')->prepend('Please select', '');
+                if ((isset(auth()->user()->roles[0]) && auth()->user()->roles[0]->name == "student")) 
+                {
+                    $vendors = Vendor::where('id',auth()->user()->vendor_id)->get()->pluck('company_name', 'id')->prepend('Please select', '');
+                    $clients =  Vendor::where('id',auth()->user()->vendor_id)
+                    ->pluck('clients'); 
+                }
+                else
+                {
+                    $vendors = Vendor::where('id',auth()->user()->id)
+                    ->pluck('company_name','id')->prepend('Please select', '');
 
-                // $clients =  Vendor::where('id',auth()->user()->id)
-                //     ->pluck('clients');   
+                    $clients =  Vendor::where('id',auth()->user()->id)
+                    ->pluck('clients'); 
 
-                // $ids = explode(",", $clients[0]);
-                // $courses = Course::whereIn('client_id',$clients)->get();
-                dump(auth()->user());
-                dd(auth()->user()->roles);
+                }
+                // $vendors=Vendor::get()->pluck('company_name', 'id')->prepend('Please select', '');
+      
+                $ids = explode(",", $clients[0]);
+                $courses = Course::whereIn('client_id',$clients)->get();
 
             }
 
-
-            return view('backend.students.create',compact('vendors'));
+            return view('backend.students.create',compact('vendors','courses'));
         }
         else {
             abort(404);
