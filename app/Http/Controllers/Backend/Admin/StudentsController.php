@@ -102,10 +102,12 @@ class StudentsController extends Controller
 
                 // $ids = explode(",", $clients[0]);
                 // $courses = Course::whereIn('client_id',$clients)->get();
+                dump(auth()->user());
+                dd(auth()->user()->roles);
 
             }
 
-            dd(auth()->user()->roles);
+
             return view('backend.students.create',compact('vendors'));
         }
         else {
