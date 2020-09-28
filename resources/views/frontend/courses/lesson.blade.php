@@ -150,14 +150,16 @@
     $forward=1;
     if(!empty($lesson) && get_class($lesson)=="App\Models\Test" && !empty($test_result) && count($lesson->questions) && (($test_result->test_result/count($lesson->questions))*100 >= $lesson->passing_percentage) ) {
         $forward=1;
-        dump($test_result->test_result);
+        (!empty($test_result)) ? dump($test_result->test_result) : '';
     }if(!empty($lesson) && get_class($lesson)=="App\Models\Test" && !empty($test_result) && count($lesson->questions) && (($test_result->test_result/count($lesson->questions))*100 < $lesson->passing_percentage) ) {
         $forward=0;
-        dump($test_result->test_result);
+        (!empty($test_result)) ? dump($test_result->test_result) : '';
+        
 
     }elseif(!empty($lesson) && get_class($lesson)=="App\Models\Test" && empty($test_result)) {
         $forward=0;
-       dump($test_result->test_result);
+        (!empty($test_result)) ? dump($test_result->test_result) : '';
+      
     }
     $course_timelines=\App\Models\CourseTimeline::where('course_id',$course->id)->distinct('model_id')->orderBy('sequence','asc')->get();
     $item=(isset($course_timelines))?$course_timelines[0]:$course->courseTimeline()->distinct('model_id')->orderBy('sequence')->get()[0];
