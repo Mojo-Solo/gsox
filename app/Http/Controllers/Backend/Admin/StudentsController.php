@@ -104,7 +104,7 @@ class StudentsController extends Controller
             }
 
 
-            return view('backend.students.create',compact('vendors','courses'));
+            return view('backend.students.create',compact('vendors'));
         }
         else {
             abort(404);
