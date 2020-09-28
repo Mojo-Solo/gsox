@@ -150,9 +150,12 @@
 
 //$lesson->questions
 //$lesson->randomquestions()
+        dd(($test_result->test_result/count($lesson->randomquestions()))*100);
+        
     $forward=1;
     if(!empty($lesson) && get_class($lesson)=="App\Models\Test" && !empty($test_result) && count($lesson->randomquestions()) && (($test_result->test_result/count($lesson->randomquestions()))*100 >=$lesson->passing_percentage) ) {
         $forward=1;
+        dd(($test_result->test_result/count($lesson->randomquestions()))*100);
     }if(!empty($lesson) && get_class($lesson)=="App\Models\Test" && !empty($test_result) && count($lesson->randomquestions()) && (($test_result->test_result/count($lesson->randomquestions()))*100 < $lesson->passing_percentage) ) {
         $forward=0;
     }elseif(!empty($lesson) && get_class($lesson)=="App\Models\Test" && empty($test_result)) {
