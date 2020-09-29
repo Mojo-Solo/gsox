@@ -100,14 +100,20 @@ class StudentsController extends Controller
                     $clients =  Vendor::where('id',auth()->user()->vendor_id)
                     ->pluck('clients'); 
                 }
-                else
+                elseif(auth()->guard('vendor')->check())
                 {
+
                     $vendors = Vendor::where('id',auth()->user()->id)
                     ->pluck('company_name','id')->prepend('Please select', '');
 
                     $clients =  Vendor::where('id',auth()->user()->id)
                     ->pluck('clients'); 
-
+                }
+                else
+                {
+                     $vendors = Vendor::where('id',auth()->user()->vendor_id)->get()->pluck('company_name', 'id')->prepend('Please select', '');
+                    $clients =  Vendor::where('id',auth()->user()->vendor_id)
+                    ->pluck('clients'); 
                 }
       
                 $ids = explode(",", $clients[0]);

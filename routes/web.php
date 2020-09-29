@@ -325,5 +325,6 @@ Route::get('let/duplicate',function(){
 });
 
 Route::get('/let/false',function(){
-    dd(auth()->user()->roles->pluck('name'));
+	// dd(auth()->guard('vendor')->user()->roles->pluck('name'));
+    dd(auth()->guard('vendor')->user());
 });

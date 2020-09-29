@@ -53,10 +53,10 @@
                             @foreach($invoices as $key=>$item)
                                 @php $key++ @endphp
                                 @php
-                                if(auth()->guard('vendor')->check()) {
-                                $item->order=App\Models\Order::findOrFail($item->order_id);
-                                }
 
+                                if(auth()->guard('vendor')->check() ||  (isset(auth()->user()->roles[0]) && auth()->user()->roles->pluck('name')->contains('vendor')))  {
+                                     $item->order = App\Models\Order::findOrFail($item->order_id);
+                                }
 
                                 @endphp
                                 <tr>

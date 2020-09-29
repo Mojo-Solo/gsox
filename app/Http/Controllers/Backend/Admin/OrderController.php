@@ -34,6 +34,7 @@ class OrderController extends Controller
     public function getData(Request $request)
     {
         if (request('offline_requests') == 1) {
+
             if(auth()->guard('vendor')->check() || auth()->user()->hasRole('supervisor')) {
                 $user_ids=auth()->user()->students();
                 $orders = Order::where('payment_type', '=', 3)->whereIn('user_id',$user_ids)->orderBy('updated_at', 'desc')->get();
@@ -56,8 +57,24 @@ class OrderController extends Controller
                 }
             }
         } else {
-            if(auth()->guard('vendor')->check() || auth()->user()->hasRole('supervisor')) {
-                $user_ids=auth()->user()->students();
+
+            if(auth()->guard('vendor')->check() || auth()->user()->hasRole('supervisor') || (isset(auth()->user()->roles[0]) && auth()->user()->roles->pluck('name')->contains('vendor'))) {
+
+                if ((isset(auth()->user()->roles[0]) && auth()->user()->roles->pluck('name')->contains('student'))) 
+                {
+                    $user_ids = Vendor::where('id',auth()->user()->vendor_id)->first();
+                    $user_ids = $user_ids->CustomFetcherstudents(auth()->user()->vendor_id);
+                }
+                elseif((isset(auth()->user()->roles[0]) && auth()->user()->roles->pluck('name')->contains('vendor')))
+                {
+                    $user_ids = Vendor::where('id',auth()->user()->vendor_id)->first();
+                    $user_ids = $user_ids->CustomFetcherstudents(auth()->user()->vendor_id);
+                }
+                else
+                {
+                    $user_ids=auth()->user()->students(); 
+                }
+
                 $orders = Order::whereIn('user_id',$user_ids)->orderBy('updated_at', 'desc')->get();
             }
             elseif(isset(auth()->user()->roles[0]) && auth()->user()->roles[0]->name=="manager") {

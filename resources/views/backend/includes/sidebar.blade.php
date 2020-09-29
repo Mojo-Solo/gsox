@@ -53,8 +53,11 @@
                 </li>
             @endif
             @endcan
-            @if($logged_in_user->hasRole('supervisor') || $logged_in_user->isAdmin() || auth()->guard('vendor')->check() || (isset(auth()->user()->roles[0]) && auth()->user()->roles[0]->name=='manager'))
-                @if(!auth()->guard('vendor')->check() && (isset(auth()->user()->roles[0]) && auth()->user()->roles[0]->name!='manager'))
+            @if($logged_in_user->hasRole('supervisor') || $logged_in_user->isAdmin() || auth()->guard('vendor')->check() || (isset(auth()->user()->roles[0]) && auth()->user()->roles[0]->name=='manager') ||
+                 (isset(auth()->user()->roles[0]) && auth()->user()->roles->pluck('name')->contains('vendor')))
+
+                @if(!auth()->guard('vendor')->check() && (isset(auth()->user()->roles[0]) && auth()->user()->roles[0]->name!='manager') && !auth()->user()->roles->pluck('name')->contains('vendor') )
+
                 <li class="nav-item nav-dropdown {{ active_class(Active::checkUriPattern(['user/courses*','user/lessons*','user/tests*','user/questions*']), 'open') }}">
                     <a class="nav-link nav-dropdown-toggle {{ active_class(Active::checkUriPattern('admin/*')) }}"
                        href="#">
@@ -123,6 +126,7 @@
                     </li>
                 @endif
                 @endcan
+
                 <li class="nav-item nav-dropdown {{ active_class(Active::checkUriPattern(['user/reports*']), 'open') }}">
                     <a class="nav-link nav-dropdown-toggle {{ active_class(Active::checkUriPattern('admin/*')) }}"
                        href="#">
@@ -131,7 +135,8 @@
                     </a>
                     <ul class="nav-dropdown-items">
 
-                        @if (auth()->guard('vendor')->check())
+                        @if (auth()->guard('vendor')->check() || (isset(auth()->user()->roles[0]) && 
+                        auth()->user()->roles->pluck("name")->contains('vendor')))
                         <li class="nav-item ">
                             <a class="nav-link {{ $request->segment(1) == 'students' ? 'active' : '' }}"
                                href="{{ route('admin.reports.students') }}">@lang('menus.backend.sidebar.reports.students')
@@ -166,7 +171,7 @@
                             </a>
                         </li>
                         @endif
-                        @if(!auth()->guard('vendor')->check() && (isset(auth()->user()->roles[0]) && auth()->user()->roles[0]->name!='manager'))
+                        @if(!auth()->guard('vendor')->check() && (isset(auth()->user()->roles[0]) && auth()->user()->roles[0]->name!='manager') && !auth()->user()->roles->pluck('name')->contains('vendor'))
                         <li class="nav-item ">
                             <a class="nav-link {{ $request->segment(1) == 'students' ? 'active' : '' }}"
                                href="{{ route('admin.reports.students') }}">@lang('menus.backend.sidebar.reports.students')
@@ -304,7 +309,7 @@
                     </li>
                 @endcan
             @endif
-            @if(!auth()->guard('vendor')->check())
+            @if(!auth()->guard('vendor')->check() && (isset(auth()->user()->roles[0]) && !auth()->user()->roles->pluck('name')->contains('vendor')))
             <li class="nav-item ">
                 <a class="nav-link {{ $request->segment(1) == 'messages' ? 'active' : '' }}"
                    href="{{ route('admin.messages') }}">
@@ -322,7 +327,7 @@
                 </a>
             </li>
             @endif
-            @if ($logged_in_user->hasRole('student') || auth()->guard('vendor')->check())
+            @if ($logged_in_user->hasRole('student') || auth()->guard('vendor')->check() || auth()->user()->roles->pluck('name')->contains('vendor'))
                 <li class="nav-item ">
                     <a class="nav-link {{ $request->segment(1) == 'invoices' ? 'active' : '' }}"
                        href="{{ route('admin.invoices.index') }}">
@@ -393,7 +398,7 @@
                     <i class="nav-icon icon-user"></i> @lang('menus.backend.access.title')
                 </a>
                 <ul class="nav-dropdown-items">
-                    @if(!$logged_in_user->isAdmin() && $logged_in_user->hasAnyPermission(['user_access']) && (isset(auth()->user()->roles[0]) && auth()->user()->roles[0]->name!='manager'))
+                    @if(!$logged_in_user->isAdmin() && $logged_in_user->hasAnyPermission(['user_access']) && (isset(auth()->user()->roles[0]) && auth()->user()->roles[0]->name!='manager') && !auth()->user()->roles->pluck('name')->contains('vendor'))
                     <li class="nav-item">
                         <a class="nav-link {{ active_class(Active::checkUriPattern('admin/auth/user*')) }}"
                            href="{{ route('admin.auth.user.index') }}">
@@ -405,6 +410,7 @@
                         </a>
                     </li>
                     @endif
+
                     @if(!$logged_in_user->isAdmin() && $logged_in_user->hasAnyPermission(['vendor_management_access']))
                     <li class="nav-item">
                         <a class="nav-link {{ active_class(Active::checkUriPattern('admin/vendors*')) }}"
@@ -413,7 +419,8 @@
                         </a>
                     </li>
                     @endif
-                    @if(!$logged_in_user->isAdmin() && $logged_in_user->hasAnyPermission(['student_management_access']) || auth()->guard('vendor')->check())
+                    @if(!$logged_in_user->isAdmin() && $logged_in_user->hasAnyPermission(['student_management_access']) || auth()->guard('vendor')->check() || (isset(auth()->user()->roles[0]) && auth()->user()->roles->pluck('name')->contains('vendor')))
+
                     <li class="nav-item {{(Request::segment(2)=='students')?'open':''}}">
                         <a class="nav-link {{(Request::segment(2)=='students')?'active':''}}"
                            href="{{ route('admin.students.index') }}">
@@ -424,6 +431,7 @@
                 </ul>
             </li>
             @endif
+
             @if ($logged_in_user->isAdmin())
 
 

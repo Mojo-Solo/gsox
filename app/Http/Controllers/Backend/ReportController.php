@@ -169,9 +169,23 @@ class ReportController extends Controller
     }
 
     public function getStudentsData(Request $request){
-        if(auth()->guard('vendor')->check()) {
-            // $user_ids=auth()->user()->supervisors();
 
+        if(auth()->guard('vendor')->check() || (isset(auth()->user()->roles[0]) && auth()->user()->roles->pluck('name')->contains('vendor'))) {
+
+                if ((isset(auth()->user()->roles[0]) && auth()->user()->roles->pluck('name')->contains('student')))
+                {
+                  $id = auth()->user()->vendor_id;
+                }
+                elseif(auth()->guard('vendor')->check())
+                {
+                    $id = auth()->user()->id;
+                }
+                else
+                {
+                    $id = auth()->user()->vendor_id; 
+                }
+
+            // $user_ids=auth()->user()->supervisors();
             $courses = DB::table('users')
                     ->join('course_student', 'course_student.user_id', '=', 'users.id')
                     ->join('courses', 'course_student.course_id', '=', 'courses.id')
@@ -184,7 +198,7 @@ class ReportController extends Controller
                     ->join('vendors', 'vendors.id', '=', 'users.vendor_id')
                     ->where('courses.published', '=', 1)
                     // ->whereIn('course_user.user_id',$user_ids)
-                    ->where('users.vendor_id',auth()->user()->id)
+                    ->where('users.vendor_id',$id)
                     ->select('users.first_name','users.id','users.id as user_id','users.last_name','users.email','users.confirmed','courses.title','vendors.company_name','orders.amount as amount_collected','orders.created_at','courses.price','orders.status','courses.id as course_id','certificates.created_at as completed_at','certificates.url')
                     ->get();
         } elseif(auth()->user()->hasRole('supervisor')) {

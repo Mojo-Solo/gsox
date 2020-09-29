@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\Admin;
 
 use App\Models\Course;
 use App\Models\Order;
+use App\Models\Vendor;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Response;
@@ -17,8 +18,21 @@ class InvoiceController extends Controller
      * @param Request $request
      */
     public function getIndex(){
-        if(auth()->guard('vendor')->check()) {
+        if(auth()->guard('vendor')->check() || (isset(auth()->user()->roles[0]) && auth()->user()->roles->pluck('name')->contains('vendor'))) 
+        {
+
             $user_ids=auth()->user()->students();
+
+            if ((isset(auth()->user()->roles[0]) && auth()->user()->roles->pluck('name')->contains('vendor'))) 
+            {
+                $user_ids = Vendor::where('id',auth()->user()->vendor_id)->first();
+                $user_ids = $user_ids->CustomFetcherstudents(auth()->user()->vendor_id);
+            }
+            else
+            {
+                $user_ids=auth()->user()->students(); 
+            }
+
             $invoices = DB::table('invoices')
                     ->join('orders', 'orders.id', '=', 'invoices.order_id')
                     ->whereIn('invoices.user_id',$user_ids)

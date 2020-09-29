@@ -64,4 +64,14 @@ class Vendor  extends Authenticatable
                 ->pluck('users.id')
                 ->toArray();
     }
+
+     public function CustomFetcherstudents($id) {
+        return $user_ids = \DB::table('users')
+                ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+                ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                ->where('roles.name', '=', 'student')
+                ->where('users.vendor_id', '=', $id)
+                ->pluck('users.id')
+                ->toArray();
+    }
 }
