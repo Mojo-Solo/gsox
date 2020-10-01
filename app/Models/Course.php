@@ -6,6 +6,7 @@ use App\Models\Auth\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use App\Models\Vendor;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -191,8 +192,19 @@ class Course extends Model
 
     public function progress($user_id='')
     {
-        if(auth()->guard('vendor')->check()) {
-            $user_ids=auth()->user()->students();
+        if(auth()->guard('vendor')->check() || (isset(auth()->user()->roles[0]) && auth()->user()->roles->pluck('name')->contains('vendor'))) {
+
+             if((isset(auth()->user()->roles[0]) && auth()->user()->roles->pluck('name')->contains('vendor'))) 
+            {
+                $user_ids = Vendor::where('id',auth()->user()->vendor_id)->first();
+                $user_ids = $user_ids->CustomFetcherstudents(auth()->user()->vendor_id);
+            }
+            else
+            {
+                $user_ids=auth()->user()->students(); 
+            }
+
+
             $completed_lessons=DB::table('chapter_students')->where('user_id',$user_id)->where('course_id', $this->id)->get()->pluck('model_id')->toArray();
         } else {
             $completed_lessons = DB::table('chapter_students')->where('user_id',\Auth::user()->id)->where('course_id',$this->id)->distinct('model_id')->count();

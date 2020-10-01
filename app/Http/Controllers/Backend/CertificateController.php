@@ -37,12 +37,25 @@ class CertificateController extends Controller
      */
     public function getCertificates()
     {
-        if(auth()->guard('vendor')->check() || auth()->user()->hasRole('supervisor')) {
-            $user_ids=auth()->user()->students();
+        if(auth()->guard('vendor')->check() || auth()->user()->hasRole('supervisor') || (isset(auth()->user()->roles[0]) && auth()->user()->roles->pluck('name')->contains('vendor'))) 
+        {
+            if((isset(auth()->user()->roles[0]) && auth()->user()->roles->pluck('name')->contains('vendor'))) 
+            {
+                $user_ids = Vendor::where('id',auth()->user()->vendor_id)->first();
+                $user_ids = $user_ids->CustomFetcherstudents(auth()->user()->vendor_id);
+            }
+            else
+            {
+                $user_ids=auth()->user()->students(); 
+            }
+
             $certificates=Certificate::whereIn('user_id',$user_ids)->where('status',1)->get();
-        } else {
+        } 
+        else 
+        {
             $certificates = auth()->user()->certificates;
         }
+
         return view('backend.certificates.index', compact('certificates'));
     }
 
