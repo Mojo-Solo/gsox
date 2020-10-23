@@ -30,11 +30,11 @@ Route::get('/demo',function(){
 });
 
 Route::get('/woowoo',function(){
-   $completed = \DB::table('chapter_students')->select('model_id')
-            ->where('course_id',519)
-            ->where('user_id',935)
-            ->pluck('model_id')
-            ->toArray();
+   // $completed = \DB::table('chapter_students')->select('model_id')
+   //          ->where('course_id',519)
+   //          ->where('user_id',935)
+   //          ->pluck('model_id')
+   //          ->toArray();
 
     // if ($cert->count() > 0) {
     //    foreach ($cert as $lesson) {
@@ -42,11 +42,11 @@ Route::get('/woowoo',function(){
     //    }
     // }
 
-    $uncompleted = \DB::table('chapter_students')->select('model_id')
-            ->where('course_id',519)
-            ->where('user_id',938)
-            ->pluck('model_id')
-            ->toArray();
+    // $uncompleted = \DB::table('chapter_students')->select('model_id')
+    //         ->where('course_id',519)
+    //         ->where('user_id',938)
+    //         ->pluck('model_id')
+    //         ->toArray();
 
     // dd(array_diff($completed,$uncompleted));
 

@@ -24,7 +24,7 @@
                     </a>
                 </li>
             @endcan
-            @if(auth()->guard('vendor')->check() || $logged_in_user->hasRole('supervisor'))
+            @if(auth()->guard('vendor')->check() || !$logged_in_user->hasRole('supervisor'))
                 <li class="nav-item ">
                     <a class="nav-link {{ $request->segment(1) == 'orders' ? 'active' : '' }}"
                        href="{{ route('admin.orders.index') }}">
@@ -309,7 +309,7 @@
                     </li>
                 @endcan
             @endif
-            @if(!auth()->guard('vendor')->check() && (isset(auth()->user()->roles[0]) && !auth()->user()->roles->pluck('name')->contains('vendor')))
+            @if(!auth()->guard('vendor')->check() && (isset(auth()->user()->roles[0]) && !auth()->user()->roles->pluck('name')->contains('vendor')) && !$logged_in_user->hasRole('supervisor'))
             <li class="nav-item ">
                 <a class="nav-link {{ $request->segment(1) == 'messages' ? 'active' : '' }}"
                    href="{{ route('admin.messages') }}">
@@ -343,7 +343,7 @@
                     </a>
                 </li>
             @endif
-            @if(auth()->user()->hasRole('supervisor'))
+          {{--   @if(auth()->user()->hasRole('supervisor'))
             <li class="nav-item ">
                 <a class="nav-link {{ $request->segment(1) == 'certificates' ? 'active' : '' }}"
                    href="{{ route('admin.certificates.index') }}">
@@ -351,7 +351,7 @@
                             class="title">@lang('menus.backend.sidebar.certificates.title')</span>
                 </a>
             </li>
-            @endif
+            @endif --}}
             @if ($logged_in_user->hasRole('supervisor') && false)
                 <li class="nav-item ">
                     <a class="nav-link {{ $request->segment(1) == 'reviews' ? 'active' : '' }}"

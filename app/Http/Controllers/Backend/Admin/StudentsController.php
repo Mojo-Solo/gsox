@@ -37,7 +37,9 @@ class StudentsController extends Controller
     public function index()
     {
         if(auth()->guard('vendor')->check() || (isset(auth()->user()->roles[0]) && auth()->user()->roles[0]->name=="manager") || auth()->user()->hasRole('supervisor')) {
-            if((isset(auth()->user()->roles[0]) && auth()->user()->roles[0]->name=="manager")) {
+
+            if((isset(auth()->user()->roles[0]) && auth()->user()->roles[0]->name=="manager")) 
+            {
                 $vendors=Vendor::where('created_by',auth()->user()->id)->pluck('id')->toArray();
                 $user_ids = \DB::table('users')
                             ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
@@ -48,6 +50,7 @@ class StudentsController extends Controller
                             ->toArray();
                 $students=User::whereIn('id',$user_ids)->get();
             } else {
+                // dd(auth()->user()->students());
                 $user_ids=auth()->user()->students();
                 $students=User::whereIn('id',$user_ids)->get();
             }
