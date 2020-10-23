@@ -75,6 +75,7 @@ class DashboardController extends Controller
                 $recent_orders = Order::whereIn('user_id',auth()->user()->students())->orderBy('created_at','desc')->take(10)->get();
                 $recent_contacts = array();
             } else {
+
                 $purchased_courses = auth()->user()->purchasedCourses();
                 
                 if(auth()->user()->hasRole('student')) {
@@ -84,8 +85,9 @@ class DashboardController extends Controller
                 $pending_orders = auth()->user()->pendingOrders();
             }
 
-            if(!auth()->guard('vendor')->check() && auth()->user()->hasRole('Supervisor')){
+            if(!auth()->guard('vendor')->check() && auth()->user()->hasRole('supervisor')){
                 //IF logged in user is Supervisor
+
                 $students_count = Course::whereHas('Supervisors', function ($query) {
                     $query->where('user_id', '=', auth()->user()->id);
                 })
