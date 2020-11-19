@@ -207,6 +207,11 @@
         @endif
     @endif
 
+    
+    <div class="alert alert-info">
+        <strong>Alert!</strong> Technical Assistance will be available up until 12:00 PM Central Time Wednesday November 25th, 2020, and Normal Technical Assistance will resume Monday November 30th, 2020
+    </div>
+
 
     @if($sections->featured_courses->status == 1)
         <!-- Start of best course
