@@ -209,7 +209,7 @@
 
     
     <div class="alert alert-info">
-        <strong>Alert!</strong> Technical Assistance will be available up until 12:00 PM Central Time Wednesday November 25th, 2020, and Normal Technical Assistance will resume Monday November 30th, 2020
+        <strong>Alert!</strong>Alert! Technical Assistance will be available up until 12:00 PM Central Time Thursday December 17, 2020,<br>and Normal Technical Assistance will resume Monday January 4, 2021.
     </div>
 
 
