@@ -86,9 +86,9 @@
         ============================================= -->
         <header>
     
-            <div class="alert alert-warning text-center" style="margin-bottom: 0px!important">
+            {{-- <div class="alert alert-warning text-center" style="margin-bottom: 0px!important">
                 <strong>Alert!</strong> Technical Assistance will be available up until 12:00 PM Central Time Thursday December 17, 2020,<br>and Normal Technical Assistance will resume Monday January 4, 2021.
-            </div>
+            </div> --}}
 
             @if(isset($lessons))
             <div id="main-menu" class="main-menu-container menu-bg-overlay">
